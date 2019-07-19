@@ -17,7 +17,8 @@
 <a href="heatmapPrestazioni.jsp">Heatmap Prestazioni</a><br/><br/>
 <a href="heatmapBranche.jsp">Heatmap Branche</a><br/><br/>
 <a href="prenotazionePerBrancaDopoBranca.jsp">Prenotazione Per Branca Dopo Branca</a><br/><br/>
-
+<a href="prenotazionePerPrestazioneDopoPrestazione.jsp">Prenotazione Per Prestazione Dopo Prestazione</a><br/><br/>
+<a href="treemapBranchePrestazioni.jsp">Treemap branche prestazioni</a><br/><br/>
 
 </body>
 </html>

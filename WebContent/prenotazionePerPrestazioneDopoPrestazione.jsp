@@ -5,7 +5,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Branche</title>
+    <title>Prestazioni</title>
 
 <!-- CSS Files -->
 <link type="text/css" href="css/base.css" rel="stylesheet" />
@@ -22,26 +22,26 @@
   </head>
 
   <body>  
-      <select id="branche" name="groupid" style="width:60%;">
+      <select id="prestazioni" name="groupid" style="width:60%;">
     	</select>
      	<a href="#" onclick="refresh();"> Aggiorna</a>
 
            
     <script>
 
-    //const serverUrl = "http://localhost:8090";
-    const serverUrl = "http://192.168.1.20:8090";
+    const serverUrl = "http://localhost:8090";
+    //const serverUrl = "http://192.168.1.20:8090";
     
     $.ajax({
         type: "GET",
-    	url: serverUrl + "/modal/api/1.0.0/branche",
+    	url: serverUrl + "/modal/api/1.0.0/prestazioni",
     	async: false,
     	error: function(e) {
     		//error({'error': e});
     	    alert("Impossibile comunicare con il servizio " + e);
     	},
     	success: function( response ) {		    		    
-    		addOptions("#branche", response);    		
+    		addOptions("#prestazioni", response);    		
     	}
     });
     
@@ -82,16 +82,16 @@
       		}
       	}
       	//var branca = $('#branche').find(":selected").text();
-      	var branca = $('#branche').find(":selected").text();
+      	var prestazione = $('#prestazioni').find(":selected").text();
       	
       	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
       			
-      	var url = serverUrl + "/modal/api/1.0.0/prenotazioniPerBrancaDopoBranca?"
+      	var url = serverUrl + "/modal/api/1.0.0/prenotazioniPerPrestazioneDopoPrestazione?"
 
       	if(min < 5000) // trovato almeno uno
       		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
       	      	
-      	url += "branca=" + branca;
+      	url += "prestazione=" + prestazione;
       	
       	$.ajax({
     	    type: "GET",
@@ -105,15 +105,10 @@
     		success: function( model ) {
     			$("#ajaxloader").hide();
     			var count = model.data[0].length;
-    			var total = 0;
-    			for(var i = 0; i < count; i++)
-        		{
-    				total += model.data[0][i];
-        		}
     			
     			var json = {
-    					"id": branca, 
-    					"name": branca,
+    					"id": prestazione, 
+    					"name": prestazione,
     				    "data": {
     				      "$area": count,
     				      "$dim": count,
@@ -128,7 +123,7 @@
     				var label = model.labels[i];
     				var child = {
     					"id": label, 
-        				"name": label + " (" + (data / total * 100).toFixed(1) + "%)",
+        				"name": label + " (" + data + ")",
         				"data": {
         				      "$area": data,
         				      "$dim": data,
