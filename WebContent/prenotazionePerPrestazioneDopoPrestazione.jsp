@@ -29,8 +29,8 @@
            
     <script>
 
-    const serverUrl = "http://localhost:8090";
-    //const serverUrl = "http://192.168.1.20:8090";
+    //const serverUrl = "http://localhost:8090";
+    const serverUrl = "http://192.168.1.20:8090";
     
     $.ajax({
         type: "GET",
