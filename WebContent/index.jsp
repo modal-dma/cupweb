@@ -19,6 +19,10 @@
 <a href="prenotazionePerBrancaDopoBranca.jsp">Prenotazione Per Branca Dopo Branca</a><br/><br/>
 <a href="prenotazionePerPrestazioneDopoPrestazione.jsp">Prenotazione Per Prestazione Dopo Prestazione</a><br/><br/>
 <a href="treemapBranchePrestazioni.jsp">Treemap branche prestazioni</a><br/><br/>
+<a href="pathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (icycle)</a><br/><br/>
+<a href="graphpathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (rgraph)</a><br/><br/>
+<a href="sunburstPathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (sunburst)</a><br/><br/>
+
 
 </body>
 </html>

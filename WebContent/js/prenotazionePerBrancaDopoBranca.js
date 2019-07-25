@@ -47,7 +47,7 @@ function createicicle(json)
     cushion: false,
     //show only three levels at a time
     constrained: true,
-    levelsToShow: 2,
+    levelsToShow: 4,
     // enable tips
     Tips: {
       enable: true,
