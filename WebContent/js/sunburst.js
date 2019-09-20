@@ -65,7 +65,7 @@ function initSunburst(json){
               html += "<b>Children:</b> " + data.children;
             }
             if("size" in data) {
-              html += "<br /><b>Size:</b> " + data.size;
+              html += "<br /><b>Occurrences:</b> " + data.size;
             }
             tip.innerHTML = html;
           }

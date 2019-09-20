@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
@@ -21,7 +22,7 @@ var myChart = null;
 
 $.ajax({
     type: "GET",
-	url: "http://192.168.1.20:8090/modal/api/1.0.0/comuni",
+	url: serverUrl + "/modal/api/1.0.0/comuni",
 	async: false,
 	error: function(e) {
 		error({'error': e});
@@ -36,7 +37,7 @@ var limit = parseInt($("#limit").val());
 
 $.ajax({
 	    type: "GET",
-		url: "http://192.168.1.20:8090/modal/api/1.0.0/tipoPrestazioni?limit=" + 10,
+		url: serverUrl + "/modal/api/1.0.0/tipoPrestazioni?limit=" + 10,
 		async: false,
 		error: function(e) {
 			error({'error': e});
@@ -156,7 +157,7 @@ function refresh()
 	
 	var comune = $('#comuni').find(":selected").text();
 	
-	var url = "http://192.168.1.20:8090/modal/api/1.0.0/tipoPrestazioni?";
+	var url = serverUrl + "/modal/api/1.0.0/tipoPrestazioni?";
 	
 	if(min < 5000) // trovato almeno uno
 		url += "startdate=01/01/" + min + "&enddate=31/12/" + max;

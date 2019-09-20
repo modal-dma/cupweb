@@ -3,9 +3,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<!-- drawer.css -->
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/css/drawer.min.css">
+<!-- jquery & iScroll -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/iScroll/5.2.0/iscroll.min.js"></script>
+<!-- drawer.js -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/js/drawer.min.js"></script>
+<title>CUP WEB</title>
 </head>
-<body>
+<body class="drawer drawer--left">
+<%@include file="header.jsp" %>
+<main role="main" style="margin: 100px;">
 <h1>MODAL@DMA</h1>
 <h2>CUP BI</h2>
 <hR>
@@ -22,7 +31,10 @@
 <a href="pathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (icycle)</a><br/><br/>
 <a href="graphpathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (rgraph)</a><br/><br/>
 <a href="sunburstPathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (sunburst)</a><br/><br/>
+<a href="etaPrestazioni.jsp">eta per prestazione</a><br/><br/>
+<a href="prestazioniEta.jsp">prestazioni per eta</a><br/><br/>
+<a href="prestazioniAltreBranche.jsp">prestazioni AltreBranche</a><br/><br/>
 
-
+</main>
 </body>
 </html>

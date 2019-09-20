@@ -74,11 +74,14 @@ function createTreemap(json){
         }
         
         if(data.playcount > 1) {
-          html += "play count: " + data.playcount.toFixed(0) + "%";
+          html += "percentage: " + data.playcount.toFixed(0) + "%";
         }
         else {
-            html += "play count: " + data.playcount.toFixed(2) + "%";
+            html += "percentage: " + data.playcount.toFixed(2) + "%";
           }
+        
+        html += "<br/>occurences: " + data.$area;
+        
         if(data.image) {
           html += "<img src=\""+ data.image +"\" class=\"album\" />";
         }

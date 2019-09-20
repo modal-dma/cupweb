@@ -48,20 +48,58 @@ function init_rgraph(json) {
         },
         //Set Node and Edge styles.
         Node: {
-            color: '#ddeeff'
+            color: '#ddeeff',
+            'overridable': true, 
         },
         
         Edge: {
           color: '#C17878',
-          lineWidth:1.5
+          lineWidth:1.5,
+          'overridable': true, 
         },
-
+        Tips: {  
+            enable: true,  
+            type: 'Native',  
+            offsetX: 10,  
+            offsetY: 10,  
+            onShow: function(tip, node) {  
+            	
+              tip.innerHTML = 
+            	    "<div class=\"tip-title\"><b>Occurences: </b> " + node.data.count + "</div>" +
+              		"<div class=\"tip-text\"><b>" +
+              				"Min: " + node.data.min + "<br/>" +
+              				"Max: " + node.data.max + "<br/>" +
+              				"Average: " + node.data.average + "<br/>" +
+              				"Children: " + node.data.children + 
+              		"</b></div>";            	               
+            }  
+          },  
+//        onShow: function(tip, node){
+//            // count children
+//            var count = 0;
+//            node.eachSubnode(function(){
+//              count++;
+//            });
+//            // add tooltip info
+//            tip.innerHTML = "<div class=\"tip-title\"><b>Name:</b> " + node.name
+//                + "</div><div class=\"tip-text\">" + count + " children<br/>" + node.data.$area + " occurrences </div>";
+//          },
         onBeforeCompute: function(node){
-            Log.write("centering " + node.name + "...");
+        	 
+        	 
+        	 
+            //Log.write("centering " + node.name + "...");
             //Add the relation list in the right column.
             //This list is taken from the data property of each JSON node.
             //$jit.id('inner-details').innerHTML = node.data.relation;
         },
+        
+        onBeforePlotLine: function(adj){
+        	adj.data.$lineWidth = adj.nodeTo.data.count / 10 + 1;
+            //Set random lineWidth for edges.  
+//            if (!adj.data.$lineWidth)   
+//                adj.data.$lineWidth = Math.random() * 7 + 1;  
+        },  
         
         //Add the name of the node in the correponding label
         //and a click handler to move the graph.
@@ -71,7 +109,7 @@ function init_rgraph(json) {
             domElement.onclick = function(){
                 rgraph.onClick(node.id, {
                     onComplete: function() {
-                        Log.write("done");
+                        //Log.write("done");
                     }
                 });
             };

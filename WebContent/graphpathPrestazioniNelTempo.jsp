@@ -3,7 +3,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-
+<script src="js/constants.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
 
@@ -29,9 +29,6 @@
            
     <script>
 
-    //const serverUrl = "http://localhost:8090";
-    const serverUrl = "http://192.168.1.20:8090";
-    
     $.ajax({
         type: "GET",
     	url: serverUrl + "/modal/api/1.0.0/prestazioni",
@@ -108,15 +105,19 @@
     			var json = {
     					"id": 1, 
     					"name": model.name,
-    				    /* "data": {
-    				      "$area": model.count,
-    				      "$dim": model.count,
-    				      "$color": "#910E8F"
-    				    }, */
+    				     "data": {
+    				      "count": model.count,
+   					      "max": model.max,
+					      "min": model.min,
+					      "average": model.average,
+					      "children": model.childrenCount					      
+    				    }, 
     				    "children": []
     			};
     			
-    			populateJSON(json, model.children, 5);    			    			    	
+    			populateJSON(json, model.children, 1);    			    			    	
+    			
+    			json.data.children = json.children.length;
     			
     			$('#infovis').css("height", $(window).height() + "px");
     			$('#infovis').html("");
@@ -128,25 +129,34 @@
       
       
       function populateJSON(node, children, level)
-      {    	      	 
+      {    	   
+    	  var treshould = 18 / Math.pow(level, 2);
+    	  
     	  for(var i = 0; i < children.length; i++)
     	  {    		
     		  var child = children[i];
     	  
-    	  	  var nodeChild = {
-					"id": "id:" + level + "-" + (++id), 
-					"name": child.name,
-				    /* "data": {
-				      "$area": child.count,
-				      "$dim": child.count,
-				      "$color": getColor(level)
-				    }, */
-				    "children": []
-				};
-    	  	  
-    	  	  node.children.push(nodeChild);
-    	  	  
-    	  	  populateJSON(nodeChild, child.children, level + 1);
+    		  if(child.count > treshould)
+    		  {
+	    	  	  var nodeChild = {
+						"id": "id:" + level + "-" + (++id), 
+						"name": child.name,
+					     "data": {
+					      "count": child.count,
+					      "max": child.max,
+					      "min": child.min,
+					      "average": child.average,
+					      "children": child.childrenCount
+					    }, 
+					    "children": []
+					};
+	    	  	  
+	    	  	  node.children.push(nodeChild);
+	    	  	  
+	    	  	  populateJSON(nodeChild, child.children, level + 1);
+	    	  	  
+	    	  	nodeChild.data.children = nodeChild.children.length;
+    		  }	
     	  }    	  	        	  
       }
       

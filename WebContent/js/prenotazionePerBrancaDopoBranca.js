@@ -47,7 +47,7 @@ function createicicle(json)
     cushion: false,
     //show only three levels at a time
     constrained: true,
-    levelsToShow: 4,
+    levelsToShow: 7,
     // enable tips
     Tips: {
       enable: true,
@@ -66,7 +66,7 @@ function createicicle(json)
         });
         // add tooltip info
         tip.innerHTML = "<div class=\"tip-title\"><b>Name:</b> " + node.name
-            + "</div><div class=\"tip-text\">" + count + " children</div>";
+            + "</div><div class=\"tip-text\">" + count + " children<br/>" + node.data.$area + " occurrences </div>";
       }
     },
     // Add events to nodes
@@ -109,7 +109,17 @@ function createicicle(json)
     // This method is called once, on label creation and only for DOM and not
     // Native labels.
     onCreateLabel: function(domElement, node){
-      domElement.innerHTML = node.name;
+    	
+    	var text = node.name; 
+        var data = node.data;
+        if("children" in data) {
+          text += "<br/><b>Children:</b> " + data.children;
+        }
+        if("size" in data) {
+          text += "<br /><b>Occurrences:</b> " + data.size;
+        }
+        domElement.innerHTML = text;
+        
       var style = domElement.style;
       style.fontSize = '0.9em';
       style.display = '';

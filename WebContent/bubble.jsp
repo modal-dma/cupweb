@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
 <meta charset="ISO-8859-1">
@@ -20,7 +21,7 @@ if(startdate && enddate)
 {
 $.ajax({
 	    type: "GET",
-		url: "http://192.168.1.20:8090/modal/api/1.0.0/prestazioniPerBrancaPerComune?startdate="+startdate + "&enddate="+enddate,
+		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune?startdate="+startdate + "&enddate="+enddate,
 		async: false,
 		error: function(e) {
 			error({'error': e});
@@ -35,7 +36,7 @@ else
 {
 	$.ajax({
 	    type: "GET",
-		url: "http://192.168.1.20:8090/modal/api/1.0.0/prestazioniPerBrancaPerComune",
+		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune",
 		async: false,
 		error: function(e) {
 			error({'error': e});

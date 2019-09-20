@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
@@ -24,7 +25,7 @@
 
 $.ajax({
     type: "GET",
-	url: "http://192.168.1.20:8090/modal/api/1.0.0/comuni",
+	url: serverUrl + "/modal/api/1.0.0/comuni",
 	async: false,
 	error: function(e) {
 		error({'error': e});
@@ -43,7 +44,7 @@ var myChart = null;
 var method = type == "disp" ? "attesaDisponibilitaPerBranca" : "attesaPerBranca";
 $.ajax({
 	    type: "GET",
-		url: "http://192.168.1.20:8090/modal/api/1.0.0/" + method,
+		url: serverUrl + "/modal/api/1.0.0/" + method,
 		async: false,
 		error: function(e) {
 			error({'error': e});
@@ -175,7 +176,7 @@ function refresh()
 	//var branca = $('#branche').find(":selected").text();
 	var comune = $('#comuni').find(":selected").text();
 	
-	var url = "http://192.168.1.20:8090/modal/api/1.0.0/" + method + "?";
+	var url = serverUrl + "/modal/api/1.0.0/" + method + "?";
 	
 	if(min < 5000) // trovato almeno uno
 		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";

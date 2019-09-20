@@ -4,9 +4,8 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="js/constants.js"></script>
-
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Branche</title>
+    <title>Prestazioni</title>
 
 <!-- CSS Files -->
 <link type="text/css" href="css/base.css" rel="stylesheet" />
@@ -18,28 +17,33 @@
 <script language="javascript" type="text/javascript" src="js/jit.js"></script>
 
 <!-- Example File -->
-<script language="javascript" type="text/javascript" src="js/prenotazionePerBrancaDopoBranca.js"></script>
+<script language="javascript" type="text/javascript" src="js/hypertree.js"></script>
 
   </head>
 
   <body>  
-      <select id="branche" name="groupid" style="width:60%;">
-    	</select>
+      <select id="prestazioni" name="groupid" style="width:30%;">
+      </select>
+      <select id="gender" name="gender" style="width:100px;">    
+      <option value='0'>Tutti</option>
+      <option value='1'>Maschio</option>
+      <option value='2'>Femmina</option>
+      </select>
      	<a href="#" onclick="refresh();"> Aggiorna</a>
 
            
     <script>
-    
+
     $.ajax({
         type: "GET",
-    	url: serverUrl + "/modal/api/1.0.0/branche",
+    	url: serverUrl + "/modal/api/1.0.0/prestazioni",
     	async: false,
     	error: function(e) {
     		//error({'error': e});
     	    alert("Impossibile comunicare con il servizio " + e);
     	},
     	success: function( response ) {		    		    
-    		addOptions("#branche", response);    		
+    		addOptions("#prestazioni", response);    		
     	}
     });
     
@@ -80,16 +84,18 @@
       		}
       	}
       	//var branca = $('#branche').find(":selected").text();
-      	var branca = $('#branche').find(":selected").text();
+      	var prestazione = $('#prestazioni').find(":selected").text();
+      	var gender = $('#gender').find(":selected").attr("value");
       	
       	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
       			
-      	var url = serverUrl + "/modal/api/1.0.0/prenotazioniPerBrancaDopoBranca?"
+      	var url = serverUrl + "/modal/api/1.0.0/pathPrestazioniNelTempo?"
 
       	if(min < 5000) // trovato almeno uno
       		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
       	      	
-      	url += "branca=" + branca;
+      	url += "prestazione=" + prestazione;
+      	url += "&gender=" + gender;
       	
       	$.ajax({
     	    type: "GET",
@@ -102,49 +108,79 @@
     		},
     		success: function( model ) {
     			$("#ajaxloader").hide();
-    			var count = model.data[0].length;
-    			var total = 0;
-    			for(var i = 0; i < count; i++)
-        		{
-    				total += model.data[0][i];
-        		}
     			
     			var json = {
-    					"id": branca, 
-    					"name": branca,
-    				    "data": {
-    				      "$area": count,
-    				      "$dim": count,
-    				      "$color": "#910E8F"
-    				    },
+    					"id": 1, 
+    					"name": model.name,
+    				     "data": {
+    				      "count": model.count,
+   					      "max": model.max,
+					      "min": model.min,
+					      "average": model.average,
+					      "children": model.childrenCount					      
+    				    }, 
     				    "children": []
     			};
     			
-    			for(var i = 0; i < count && i < 15; i++)
-    			{
-    				var data = model.data[0][i];
-    				var label = model.labels[i];
-    				var child = {
-    					"id": label, 
-        				"name": label + " (" + (data / total * 100).toFixed(1) + "%)",
-        				"data": {
-        				      "$area": data,
-        				      "$dim": data,
-        				      "$color": "#D21B7A"
-        				},
-        				"children": []
-    				};	
-    				
-    				json.children.push(child);
-    			}    			    	
+    			populateJSON(json, model.children, 1);  
     			
+    			json.data.children = json.children.length;
     			
     			$('#infovis').css("height", $(window).height() + "px");
     			$('#infovis').html("");
-    			createicicle(json);    			    			
+    			init_hypertree(json);    			    			
     		}
     	});      	      	      				      
       }                 
+      var id = 1;
+      
+      
+      function populateJSON(node, children, level)
+      {    	   
+    	  var treshould = 10 / Math.pow(level, 2);
+    	  
+    	  for(var i = 0; i < children.length; i++)
+    	  {    		
+    		  var child = children[i];
+    	  
+    		  if(child.count > treshould)
+    		  {
+	    	  	  var nodeChild = {
+						"id": "id:" + level + "-" + (++id), 
+						"name": child.name,
+					     "data": {
+					      "count": child.count,
+					      "max": child.max,
+					      "min": child.min,
+					      "average": child.average,
+					      "children": child.childrenCount
+					    }, 
+					    "children": []
+					};
+	    	  	  
+	    	  	  node.children.push(nodeChild);
+	    	  	  
+	    	  	  populateJSON(nodeChild, child.children, level + 1);
+	    	  	  
+	    	  	  nodeChild.data.children = nodeChild.children.length;
+    		  }	
+    	  }    	  	        	  
+      }
+      
+      function getColor(i)
+      {
+     	var frequency = 1;
+     	var amplitude = 127;
+     	var center = 128;
+     	var phase = 128;
+     		
+ 		var red   = Math.cos(frequency*i+1) * amplitude + center;
+ 	    var green = Math.cos(frequency*i+2) * amplitude + center;
+ 	    var blue  = Math.cos(frequency*i+3) * amplitude + center;
+ 		    
+ 		return 'rgba(' + red + ', ' + green+ ', ' + blue + ', 0.2)';
+    		
+      }
       
     </script>
   	<div id="container">

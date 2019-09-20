@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
 <meta charset="ISO-8859-1">
@@ -27,7 +28,7 @@ var myChart = null;
 
 $.ajax({
     type: "GET",
-	url: "http://192.168.1.20:8090/modal/api/1.0.0/branche",
+	url: serverUrl + "/modal/api/1.0.0/branche",
 	async: false,
 	error: function(e) {
 		//error({'error': e});
@@ -146,8 +147,7 @@ function refresh()
 	//var branca = $('#branche').find(":selected").text();
 	var branca = $('#branca').find(":selected").text();
 	
-	//var url = "http://192.168.1.20:8090/modal/api/1.0.0/prestazioniBrancaNelTempo?branca="+ branca;
-	var url = "http://localhost:8090/modal/api/1.0.0/prestazioniBrancaNelTempo?branca="+ branca;
+	var url = serverUrl + "/modal/api/1.0.0/prestazioniBrancaNelTempo?branca="+ branca;
 					
 	$.ajax({
 	    type: "GET",

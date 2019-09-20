@@ -3,6 +3,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
@@ -28,10 +29,7 @@
 
            
     <script>
-
-    //const serverUrl = "http://localhost:8090";
-    const serverUrl = "http://192.168.1.20:8090";
-    
+   
     $.ajax({
         type: "GET",
     	url: serverUrl + "/modal/api/1.0.0/prestazioni",
@@ -109,6 +107,7 @@
     					"id": 1, 
     					"name": model.name,
     				     "data": {
+    				      "size": model.count,
     				      "$type": "none",
     				      "$color": "#910E8F",
     				      "children": 0
@@ -116,7 +115,7 @@
     				    "children": []
     			};
     			
-    			populateJSON(json, model.children, 5);
+    			populateJSON(json, model.children, 1);
     			json.data.children = json.children.length;
     			
     			$('#infovis').css("height", $(window).height() + "px");
@@ -129,27 +128,33 @@
       
       
       function populateJSON(node, children, level)
-      {    	      	 
+      {    	   
+    	  var count = 0;
     	  for(var i = 0; i < children.length; i++)
     	  {    		
     		  var child = children[i];
-    	  
-    	  	  var nodeChild = {
-					"id": "id:" + level + "-" + (++id), 
-					"name": child.name,
-				     "data": {
-				      "$angularWidth": child.count,
-				      "size": child.count,
-				      "$color": getColor(level),
-				      "children": 0
-				    },
-				    "children": []
-				};
-    	  	  
-    	  	  node.children.push(nodeChild);
-    	  	  
-    	  	  populateJSON(nodeChild, child.children, level + 1);
-    	  	  nodeChild.data.children = nodeChild.children.length;
+  
+    		  if(child.count > 18 / Math.pow(level, 2))
+    		  {    			   
+	    	  	  var nodeChild = {
+						"id": "id:" + level + "-" + (++id), 
+						"name": child.name,
+					     "data": {
+					      "$angularWidth": child.count,
+					      "size": child.count,
+					      "$color": getColor(level),
+					      "children": 0
+					    },
+					    "children": []
+					};
+	    	  	  
+	    	  	  
+	    	  		node.children.push(nodeChild);
+	    	  		
+	    	  	  	populateJSON(nodeChild, child.children, level + 1);    	  	     	  	  
+	    	  	  	nodeChild.data.children = nodeChild.children.length;    	  	  
+	    	  	  
+    		  }
     	  }    	  	        	  
       }
       

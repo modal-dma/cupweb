@@ -3,6 +3,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
@@ -24,10 +25,7 @@
   <body>  
               
     <script>
-
-    const serverUrl = "http://localhost:8090";
-    //const serverUrl = "http://192.168.1.20:8090";
-       
+   
      function refresh()
      {
    	  	$("#ajaxloader").show();
@@ -136,7 +134,7 @@
      						var child = root.children[i];
      						child.data.playcount = (child.data.playcount / area) * 100;
      						
-     						if(child.data.playcount >= 0.5)
+     						if(child.data.playcount >= 1)
      							actualChildren.push(child);
          				}
      						     						

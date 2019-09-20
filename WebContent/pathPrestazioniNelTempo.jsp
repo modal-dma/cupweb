@@ -3,6 +3,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
@@ -28,10 +29,7 @@
 
            
     <script>
-
-    //const serverUrl = "http://localhost:8090";
-    const serverUrl = "http://192.168.1.20:8090";
-    
+   
     $.ajax({
         type: "GET",
     	url: serverUrl + "/modal/api/1.0.0/prestazioni",
@@ -116,7 +114,7 @@
     				    "children": []
     			};
     			
-    			populateJSON(json, model.children, 5);    			    			    	
+    			populateJSON(json, model.children, 1);    			    			    	
     			
     			$('#infovis').css("height", $(window).height() + "px");
     			$('#infovis').html("");
@@ -129,24 +127,28 @@
       
       function populateJSON(node, children, level)
       {    	      	 
+    	 
     	  for(var i = 0; i < children.length; i++)
     	  {    		
     		  var child = children[i];
     	  
-    	  	  var nodeChild = {
-					"id": "id:" + level + "-" + (++id), 
-					"name": child.name,
-				    "data": {
-				      "$area": child.count,
-				      "$dim": child.count,
-				      "$color": getColor(level)
-				    },
-				    "children": []
-				};
-    	  	  
-    	  	  node.children.push(nodeChild);
-    	  	  
-    	  	  populateJSON(nodeChild, child.children, level + 1);
+    		  if(child.count > 18 / Math.pow(level, 3))
+    		  {
+	    	  	  var nodeChild = {
+						"id": "id:" + level + "-" + (++id), 
+						"name": child.name,
+					    "data": {
+					      "$area": child.count,
+					      "$dim": child.count,
+					      "$color": getColor(level)
+					    },
+					    "children": []
+					};	    	  	  	    	  	
+	    	  	 
+	    	  	  node.children.push(nodeChild);
+	    	  	  
+	    	  	  populateJSON(nodeChild, child.children, level + 1);
+    		  }
     	  }    	  	        	  
       }
       

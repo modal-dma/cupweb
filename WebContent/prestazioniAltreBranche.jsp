@@ -11,16 +11,7 @@
 <body>
 
 <input type="checkbox" class="year" id="2013" value="2013"> 2013 | <input type="checkbox" class="year" id="2014" value="2014"> 2014 | <input type="checkbox" class="year" id="2015" value="2015"> 2015 | <input type="checkbox" class="year" id="2016" value="2016"> 2016 | <input type="checkbox" class="year" id="2017" value="2017"> 2017 | <input type="checkbox" class="year" id="2018" value="2018"> 2018 | <input type="checkbox" class="year" id="2019" value="2019"> 2019
-<!-- 
-<br/>
-<select id="branche" name="groupid" style="width:100%;">
 
-</select>
- -->
-<br/>
-<select id="comuni" name="groupid" style="width:60%;">
-
-</select> 
 <br/>
 
  <a href="#" onclick="refresh();"> Aggiorna</a>
@@ -48,22 +39,10 @@ $.ajax({
 	}
 });
 */
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/comuni",
-	async: false,
-	error: function(e) {
-		error({'error': e});
-	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-	},
-	success: function( response ) {		    		    
-		addOptions("#comuni", response);
-	}
-});
 
 $.ajax({
 	    type: "GET",
-		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBranca",
+		url: serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche",
 		async: false,
 		error: function(e) {
 			error({'error': e});
@@ -182,20 +161,11 @@ function refresh()
 				max = v;			
 		}
 	}
-	//var branca = $('#branche').find(":selected").text();
-	var comune = $('#comuni').find(":selected").text();
-	
-	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
+	var url = serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche?";
 	
 	if(min < 5000) // trovato almeno uno
 		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
 	
-	//if(branca != "Tutti")
-	//	url += "branca=" + branca + "&";
-	
-	if(comune != "Tutti")
-		url += "comune=" + comune;
-					
 	$.ajax({
 	    type: "GET",
 		url: url,
