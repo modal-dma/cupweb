@@ -63,15 +63,17 @@ function init_rgraph(json) {
             offsetX: 10,  
             offsetY: 10,  
             onShow: function(tip, node) {  
-            	
+            	            	
               tip.innerHTML = 
-            	    "<div class=\"tip-title\"><b>Occurences: </b> " + node.data.count + "</div>" +
+            	    "<div class=\"tip-title\"><b>" + node.name + "</b></div>" + 
               		"<div class=\"tip-text\"><b>" +
+              			 "<b>Occurences: </b> " + node.data.count + "<br/>" +
+              			 "<b>Percentage: </b> " + node.data.percentage.toFixed(2) + "<br/>" +
               				"Min: " + node.data.min + "<br/>" +
               				"Max: " + node.data.max + "<br/>" +
               				"Average: " + node.data.average + "<br/>" +
               				"Children: " + node.data.children + 
-              		"</b></div>";            	               
+              		"</div>";            	               
             }  
           },  
 //        onShow: function(tip, node){
@@ -95,7 +97,7 @@ function init_rgraph(json) {
         },
         
         onBeforePlotLine: function(adj){
-        	adj.data.$lineWidth = adj.nodeTo.data.count / 10 + 1;
+        	adj.data.$lineWidth = adj.nodeTo.data.percentage + 1;
             //Set random lineWidth for edges.  
 //            if (!adj.data.$lineWidth)   
 //                adj.data.$lineWidth = Math.random() * 7 + 1;  
@@ -121,17 +123,27 @@ function init_rgraph(json) {
             style.display = '';
             style.cursor = 'pointer';
 
-            if (node._depth <= 1) {
+            if (node._depth < 1) {
                 style.fontSize = "0.8em";
                 style.color = "#ddd";
             
-            } else if(node._depth == 2){
+            }else if (node._depth == 1) {
                 style.fontSize = "0.7em";
-                style.color = "#ccc";
+                style.color = "#ddd";
             
-            } else {
-            	style.fontSize = "0.7em";
-                style.color = "#ccc";
+            } else if(node._depth == 2){
+                style.fontSize = "0.6em";
+                style.color = "#aaa";
+            
+            }
+            else if(node._depth == 3){
+                style.fontSize = "0.4em";
+                style.color = "#aaa";
+            
+            }
+            else {
+            	style.fontSize = "0.2em";
+                style.color = "#555";
                 //style.display = 'none';
             }
 

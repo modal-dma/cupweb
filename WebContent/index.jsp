@@ -31,6 +31,10 @@
 <a href="pathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (icycle)</a><br/><br/>
 <a href="graphpathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (rgraph)</a><br/><br/>
 <a href="sunburstPathPrestazioniNelTempo.jsp">Path prestazioni nel tempo (sunburst)</a><br/><br/>
+<a href="hypertreePrestazioniNelTempo.jsp">Path prestazioni nel tempo (hypertree)</a><br/><br/>
+<a href="spacetreePrestazioniNelTempo.jsp">Path prestazioni nel tempo (spacetree)</a><br/><br/>
+
+
 <a href="etaPrestazioni.jsp">eta per prestazione</a><br/><br/>
 <a href="prestazioniEta.jsp">prestazioni per eta</a><br/><br/>
 <a href="prestazioniAltreBranche.jsp">prestazioni AltreBranche</a><br/><br/>

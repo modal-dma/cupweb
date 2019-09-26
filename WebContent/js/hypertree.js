@@ -64,21 +64,24 @@ function init_hypertree(json){
           offsetY: 10,  
           onShow: function(tip, node) {  
           	
-            tip.innerHTML = 
-          	    "<div class=\"tip-title\"><b>Occurences: </b> " + node.data.count + "</div>" +
+        	  //"<br/><b>Percentage: </b> " + (100 * node.data.count / node.data.parent.data.count) + "</div>" +
+        	  tip.innerHTML = 
+          	    "<div class=\"tip-title\"><b>" + node.name + "</b></div>" + 
             		"<div class=\"tip-text\"><b>" +
+            			 "<b>Occurences: </b> " + node.data.count + "<br/>" +
+            			 "<b>Percentage: </b> " + node.data.percentage.toFixed(2) + "<br/>" +
             				"Min: " + node.data.min + "<br/>" +
             				"Max: " + node.data.max + "<br/>" +
             				"Average: " + node.data.average + "<br/>" +
             				"Children: " + node.data.children + 
-            		"</b></div>";            	               
+            		"</div>";         	               
           }  
         },  
       onBeforeCompute: function(node){
           Log.write("centering");
       },
       onBeforePlotLine: function(adj){
-      	adj.data.$lineWidth = adj.nodeTo.data.count / 10 + 1;
+      	adj.data.$lineWidth = adj.nodeTo.data.percentage + 1;
           //Set random lineWidth for edges.  
 //          if (!adj.data.$lineWidth)   
 //              adj.data.$lineWidth = Math.random() * 7 + 1;  

@@ -22,10 +22,40 @@
   </head>
 
   <body>  
-      <select id="prestazioni" name="groupid" style="width:60%;">
+      <select id="prestazioni" name="groupid" style="width:20%;">
     	</select>
+    	 <select id="gender" name="gender" style="width:100px;">    
+      <option value='0'>Tutti</option>
+      <option value='1'>Maschio</option>
+      <option value='2'>Femmina</option>
+      </select>
+       <select id="annoPartenza" name="annoPartenza" style="width:100px;">    
+      <option value='2014'>2014</option>
+      <option value='2015'>2015</option>
+      <option value='2016'>2016</option>
+      <option value='2017'>2017</option>
+      <option value='2018'>2018</option>
+      <option value='2019'>2019</option>
+      </select>
+      <select id="anni" name="anni" style="width:100px;">         
+      <option value='1'>1</option>
+      <option value='2'>2</option>
+      <option value='3'>3</option>
+      <option value='4'>4</option>
+      <option value='5'>5</option>
+      </select>
+      <select id="eta" name="eta" style="width:100px;">         
+      <option value='0-14'>0-14</option>
+      <option value='15-30'>15-30</option>
+      <option value='30-40'>30-40</option>
+      <option value='40-50'>40-50</option>
+      <option value='50-60'>50-60</option>
+      <option value='60-70'>60-70</option>
+      <option value='70-90'>70-90</option>            
+      <option value='>90'>>90</option>      
+      </select>
+      <input type="text" id="userLimit" id="userLimit" value="10000" style="width:200px"/>
      	<a href="#" onclick="refresh();"> Aggiorna</a>
-
            
     <script>
 
@@ -59,36 +89,24 @@
       function refresh()
       {
     	  $("#ajaxloader").show();
-    	  
-      	var min = 5000, max = 0;
-      	
-      	var years = $(".year");
-      	
-      	for(var i = 0; i < years.length; i++)
-      	{
-      		var year = years[i];
-      	
-      		if(year.checked)
-      		{
-      			var v = parseInt(year.id);
-      			if(v < min)
-      				min = v;
-      			
-      			if(v > max)
-      				max = v;			
-      		}
-      	}
-      	//var branca = $('#branche').find(":selected").text();
+    	
       	var prestazione = $('#prestazioni').find(":selected").text();
-      	
+      	var gender = $('#gender').find(":selected").attr("value");
+      	var userLimit = $('#userLimit').val();
+      	var anni = $('#anni').find(":selected").attr("value");
+      	var annoPartenza = $('#annoPartenza').find(":selected").attr("value");
+      	var eta = $('#eta').find(":selected").attr("value");
       	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
       			
       	var url = serverUrl + "/modal/api/1.0.0/pathPrestazioniNelTempo?"
 
-      	if(min < 5000) // trovato almeno uno
-      		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
-      	      	
+          	
       	url += "prestazione=" + prestazione;
+      	url += "&gender=" + gender;
+      	url += "&limitUser=" + userLimit;
+      	url += "&startdate=" + annoPartenza;
+      	url += "&anni=" + anni;
+      	url += "&eta=" + eta;
       	
       	$.ajax({
     	    type: "GET",
@@ -110,12 +128,13 @@
    					      "max": model.max,
 					      "min": model.min,
 					      "average": model.average,
-					      "children": model.childrenCount					      
+					      "children": model.childrenCount,
+					      "percentage": 100
     				    }, 
     				    "children": []
     			};
     			
-    			populateJSON(json, model.children, 1);    			    			    	
+    			populateJSON(model.count, json, model.children, 1);    			    			    	
     			
     			json.data.children = json.children.length;
     			
@@ -128,15 +147,16 @@
       var id = 1;
       
       
-      function populateJSON(node, children, level)
+      function populateJSON(totalCount, node, children, level)
       {    	   
-    	  var treshould = 18 / Math.pow(level, 2);
+    	  var treshould = 10 / Math.pow(level, 2);
     	  
     	  for(var i = 0; i < children.length; i++)
     	  {    		
     		  var child = children[i];
     	  
-    		  if(child.count > treshould)
+    		  var percentage = (100 * child.count / node.data.count)
+    		  if(percentage >= 1)
     		  {
 	    	  	  var nodeChild = {
 						"id": "id:" + level + "-" + (++id), 
@@ -146,14 +166,15 @@
 					      "max": child.max,
 					      "min": child.min,
 					      "average": child.average,
-					      "children": child.childrenCount
+					      "children": child.childrenCount,
+					      "percentage": (100 * child.count / totalCount)
 					    }, 
 					    "children": []
 					};
 	    	  	  
 	    	  	  node.children.push(nodeChild);
 	    	  	  
-	    	  	  populateJSON(nodeChild, child.children, level + 1);
+	    	  	  populateJSON(totalCount, nodeChild, child.children, level + 1);
 	    	  	  
 	    	  	nodeChild.data.children = nodeChild.children.length;
     		  }	
