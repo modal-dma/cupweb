@@ -52,7 +52,8 @@
       <option value='50-60'>50-60</option>
       <option value='60-70'>60-70</option>
       <option value='70-90'>70-90</option>            
-      <option value='>90'>>90</option>      
+      <option value='>90'>>90</option>
+      <option value='tutti'>Tutti</option>      
       </select>
       <input type="text" id="userLimit" id="userLimit" value="10000" style="width:200px"/>
      	<a href="#" onclick="refresh();"> Aggiorna</a>
@@ -106,7 +107,8 @@
       	url += "&limitUser=" + userLimit;
       	url += "&startdate=" + annoPartenza;
       	url += "&anni=" + anni;
-      	url += "&eta=" + eta;
+      	if(eta != "tutti")
+      		url += "&eta=" + eta;
       	
       	$.ajax({
     	    type: "GET",
