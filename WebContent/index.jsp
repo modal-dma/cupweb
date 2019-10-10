@@ -38,6 +38,7 @@
 <a href="etaPrestazioni.jsp">eta per prestazione</a><br/><br/>
 <a href="prestazioniEta.jsp">prestazioni per eta</a><br/><br/>
 <a href="prestazioniAltreBranche.jsp">prestazioni AltreBranche</a><br/><br/>
+<a href="bubblePrestazioni.jsp">prestazioni non residenti per uop (bubble)</a><br/><br/>
 
 </main>
 </body>

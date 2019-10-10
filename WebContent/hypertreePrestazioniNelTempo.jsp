@@ -3,6 +3,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/constants.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
@@ -22,8 +23,11 @@
   </head>
 
   <body>  
-      <select id="prestazioni" name="groupid" style="width:20%;">
-    	</select>
+  <div class="ui-widget">
+  <label for="prestazioni">Prestazioni: </label>
+  <input id="prestazioni">
+</div>
+      
     	 <select id="gender" name="gender" style="width:100px;">    
       <option value='0'>Tutti</option>
       <option value='1'>Maschio</option>
@@ -75,12 +79,17 @@
     
     function addOptions(id, optionList)
     {
+    	$( id).autocomplete({
+  	      source: optionList
+  	    });
+    	/*
     	var select = $(id);    	
     	for(var i = 0; i < optionList.length; i++)
     	{
     		var option = optionList[i];
     		select.append('<option value="' + option + '">' + option + '</option>');
     	}
+    	*/
     }
     
     
