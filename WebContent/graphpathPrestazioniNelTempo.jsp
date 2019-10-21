@@ -2,7 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/constants.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
@@ -22,44 +24,10 @@
   </head>
 
   <body>  
-      <select id="prestazioni" name="groupid" style="width:20%;">
-    	</select>
-    	 <select id="gender" name="gender" style="width:100px;">    
-      <option value='0'>Tutti</option>
-      <option value='1'>Maschio</option>
-      <option value='2'>Femmina</option>
-      </select>
-       <select id="annoPartenza" name="annoPartenza" style="width:100px;">    
-      <option value='2014'>2014</option>
-      <option value='2015'>2015</option>
-      <option value='2016'>2016</option>
-      <option value='2017'>2017</option>
-      <option value='2018'>2018</option>
-      <option value='2019'>2019</option>
-      </select>
-      <select id="anni" name="anni" style="width:100px;">         
-      <option value='1'>1</option>
-      <option value='2'>2</option>
-      <option value='3'>3</option>
-      <option value='4'>4</option>
-      <option value='5'>5</option>
-      </select>
-      <select id="eta" name="eta" style="width:100px;">         
-      <option value='0-14'>0-14</option>
-      <option value='15-30'>15-30</option>
-      <option value='30-40'>30-40</option>
-      <option value='40-50'>40-50</option>
-      <option value='50-60'>50-60</option>
-      <option value='60-70'>60-70</option>
-      <option value='70-90'>70-90</option>            
-      <option value='>90'>>90</option>
-      <option value='tutti'>Tutti</option>      
-      </select>
-      <input type="text" id="userLimit" id="userLimit" value="10000" style="width:200px"/>
-     	<a href="#" onclick="refresh();"> Aggiorna</a>
-           
+  <%@include file="headerPrestazioni.jsp" %>
+  
     <script>
-
+           
     $.ajax({
         type: "GET",
     	url: serverUrl + "/modal/api/1.0.0/prestazioni",
@@ -71,27 +39,16 @@
     	success: function( response ) {		    		    
     		addOptions("#prestazioni", response);    		
     	}
-    });
-    
-    function addOptions(id, optionList)
-    {
-    	var select = $(id);    	
-    	for(var i = 0; i < optionList.length; i++)
-    	{
-    		var option = optionList[i];
-    		select.append('<option value="' + option + '">' + option + '</option>');
-    	}
-    }
-    
-    
-     
-    
+    });    
       
       function refresh()
       {
     	  $("#ajaxloader").show();
     	
-      	var prestazione = $('#prestazioni').find(":selected").text();
+       	var prestazione = $('#prestazioni-auto').val();
+       	if(prestazione == ""  || prestazione == undefined)
+       		prestazione = $('#prestazioni').find(":selected").text();
+
       	var gender = $('#gender').find(":selected").attr("value");
       	var userLimit = $('#userLimit').val();
       	var anni = $('#anni').find(":selected").attr("value");

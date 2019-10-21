@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
-<input type="checkbox" class="year" id="2013" value="2013"> 2013 | <input type="checkbox" class="year" id="2014" value="2014"> 2014 | <input type="checkbox" class="year" id="2015" value="2015"> 2015 | <input type="checkbox" class="year" id="2016" value="2016"> 2016 | <input type="checkbox" class="year" id="2017" value="2017"> 2017 | <input type="checkbox" class="year" id="2018" value="2018"> 2018 | <input type="checkbox" class="year" id="2019" value="2019"> 2019 | <a href="#" onclick="refresh();"> Aggiorna</a> 
-<div class="chart-container" style="position: relative; height:60vh; width:60vw">
-</div>
+<span class="ui-widget">MinValue: <input id="minValue" value="0"  style="width:80px;"></span>
+<%@include file="headerComuni.jsp" %>
+
 <script>
+
+$.ajax({
+    type: "GET",
+	url: serverUrl + "/modal/api/1.0.0/comuni",
+	async: false,
+	error: function(e) {
+		error({'error': e});
+	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+	},
+	success: function( response ) {		    		    
+		addOptions("#comuni", response);
+	}
+});
 
 var myChart = null;
 
@@ -38,6 +53,9 @@ function printChart(model)
 	var center = 128;
 	var phase = 1;
 	
+	var total = 0;
+	var valuesHashMap = { };
+	
 	for(var i = 0; i < count; i++)
 	{
 		var red   = Math.sin(frequency*i+2+phase) * amplitude + center;
@@ -46,6 +64,10 @@ function printChart(model)
 	    
 		//var color = 20 + i * 2;
 		backgroundColorArray.push('rgba(' + red + ', ' + green+ ', ' + blue + ', 0.2)');
+		
+		total += model.data[0][i];
+		
+		valuesHashMap[model.labels[i] + ": " + model.data[0][i]] = model.data[0][i];
 	}
 
 	if(myChart != null)
@@ -53,7 +75,9 @@ function printChart(model)
 		$("#myChart").remove();		
 	}
 	
-	$(".chart-container").append('<canvas id="myChart"></canvas>');
+	var h = $(document).height() - 40;
+	var w = $("body").width();
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '"></canvas>');		
 	
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
@@ -63,7 +87,7 @@ function printChart(model)
 	        datasets: [{
 	            label: '# di prestazioni per branca',
 	            data: model.data[0],	            
-	            backgroundColor: backgroundColorArray,
+	            backgroundColor: colors,
 	            /*
 	            borderColor: [
 	                'rgba(255, 99, 132, 1)',
@@ -79,12 +103,90 @@ function printChart(model)
 	    options: {
 	    	aspectRatio: 1,
 	    	responsive: true,
-	        scales: {
-	            yAxes: [{
-	                ticks: {
-	                    beginAtZero: true
+	        
+	        legend: {
+	        	display: false,
+	        	label: 
+	        		{
+	        		
+	        		}
+	        },
+	        tooltips: {
+	            // Disable the on-canvas tooltip
+	            enabled: false,
+
+	            custom: function(tooltipModel) {
+	                // Tooltip Element
+	                var tooltipEl = document.getElementById('chartjs-tooltip');
+
+	                // Create element on first render
+	                if (!tooltipEl) {
+	                    tooltipEl = document.createElement('div');
+	                    tooltipEl.id = 'chartjs-tooltip';
+	                    tooltipEl.innerHTML = '<table></table>';
+	                    document.body.appendChild(tooltipEl);
 	                }
-	            }]
+
+	                // Hide if no tooltip
+	                if (tooltipModel.opacity === 0) {
+	                    tooltipEl.style.opacity = 0;
+	                    return;
+	                }
+
+	                // Set caret Position
+	                tooltipEl.classList.remove('above', 'below', 'no-transform');
+	                if (tooltipModel.yAlign) {
+	                    tooltipEl.classList.add(tooltipModel.yAlign);
+	                } else {
+	                    tooltipEl.classList.add('no-transform');
+	                }
+
+	                function getBody(bodyItem) {
+	                    return bodyItem.lines;
+	                }
+
+	                // Set Text
+	                if (tooltipModel.body) {
+	                    var titleLines = tooltipModel.title || [];
+	                    var bodyLines = tooltipModel.body.map(getBody);
+
+	                    var innerHtml = '<thead>';
+
+	                    titleLines.forEach(function(title) {
+	                        innerHtml += '<tr><th>' + title + '</th></tr>';
+	                    });
+	                    innerHtml += '</thead><tbody>';
+
+	                    bodyLines.forEach(function(body, i) {
+	                        var colors = tooltipModel.labelColors[i];
+	                        var style = 'background:#DDD';// + colors.backgroundColor;
+	                        style += '; border-color:' + colors.borderColor;
+	                        style += '; border-width: 2px';
+	                        var span = '<span style="' + style + '"></span>';	        
+	                        var perc = (valuesHashMap[body[0]] / total * 100);
+	                        innerHtml += '<tr><td>' + span + body + '</td></tr></tr><tr><td>' + perc.toFixed(2) + '%</td></tr><tr><td>Totale: ' + total + '</td>';
+	                    });
+	                    innerHtml += '</tbody>';
+
+	                    var tableRoot = tooltipEl.querySelector('table');
+	                    tableRoot.innerHTML = innerHtml;
+	                }
+
+	                // `this` will be the overall tooltip
+	                var position = this._chart.canvas.getBoundingClientRect();
+
+	                // Display, position, and set styles for font
+	                tooltipEl.style.opacity = 1;
+	                tooltipEl.style.position = 'absolute';
+	                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+	                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+	                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+	                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+	                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+	                tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+	                tooltipEl.style.pointerEvents = 'none';
+	                tooltipEl.style.backgroundColor = "#DDD";
+	            }
 	        }
 	    }
 	});
@@ -119,9 +221,26 @@ function refresh()
 		}
 	}
 	
+	var comune = $('#comuni-auto').val();
+	if(comune == ""  || comune == undefined)
+		comune = $('#comuni').find(":selected").text();
+	
+	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
+	
+	if(min < 5000) // trovato almeno uno
+		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
+	
+	//if(branca != "Tutti")
+	//	url += "branca=" + branca + "&";
+	
+	if(comune != "Tutti")
+		url += "comune=" + comune;
+	
+	url += "&minValue=" + $('#minValue').val();
+	
 	$.ajax({
 	    type: "GET",
-		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?startdate=01/01/" + min + "&enddate=31/12/" + max,
+		url: url,
 		async: false,
 		error: function(e) {
 			error({'error': e});
@@ -131,7 +250,6 @@ function refresh()
 		    printChart(response);
 		}
 	});
-	
 }
 
 /*

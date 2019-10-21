@@ -120,7 +120,7 @@
     				    "children": []
     			};
     			
-    			for(var i = 0; i < count && i < 15; i++)
+    			for(var i = 0; i < count; i++)
     			{
     				var data = model.data[0][i];
     				var label = model.labels[i];

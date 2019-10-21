@@ -65,13 +65,16 @@ function printChart(model)
 		data.push(point);
 	}
 		
+	var h = $(document).height() - 200;
+	var w = $("body").width() - 200;
+	
 	var myChart = new dimple.chart(svg, data);
-    myChart.setBounds(200, 100, 1600, 600)
+    myChart.setBounds(200, 0, w, h)
     var x = myChart.addCategoryAxis("x", "Comune");    
     myChart.addCategoryAxis("y", "Branca");
     myChart.addMeasureAxis("z", "Prestazioni");
     myChart.addSeries("Prestazioni", dimple.plot.bubble);
-    myChart.addLegend(140, 10, 360, 20, "right");
+    //myChart.addLegend(140, 10, 360, 20, "right");
     myChart.draw();
 }
 

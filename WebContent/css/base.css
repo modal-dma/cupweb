@@ -3,7 +3,7 @@ html, body {
     padding:0;
     font-family: "Lucida Grande", Verdana;
     font-size: 0.9em;
-    text-align: center;
+    /*text-align: center;*/
     background-color:#000;
 }
 
@@ -120,4 +120,9 @@ a {
     font-size:10px;
     font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
     padding:7px;
+}
+
+.ui-widget
+{
+	background-color: white;
 }

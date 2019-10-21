@@ -5,13 +5,6 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="js/constants.js"></script>
 
-<!-- drawer.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/css/drawer.min.css">
-<!-- jquery & iScroll -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/iScroll/5.2.0/iscroll.min.js"></script>
-<!-- drawer.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/drawer/3.2.2/js/drawer.min.js"></script>
-
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
 
@@ -27,19 +20,9 @@
 <!-- Example File -->
 <script language="javascript" type="text/javascript" src="js/prenotazionePerBrancaDopoBranca.js"></script>
 
-<style type="text/css">
-.drawer-hamburger-icon {background-color: #ffffff;}
-.drawer-nav {background-color: #000; color: #FFF;}
-.drawer-menu-item {color: #FFF;}
-.drawer-brand {color: #FFF;}
-.drawer-open .drawer-hamburger-icon {background-color: #ffffff;}
-
-</style>
   </head>
 
-  <body>
-  <%@include file="header.jsp" %>
-    
+  <body>    
       <select id="prestazioni" name="groupid" style="width:60%;">
     	</select>
      	<a href="#" onclick="refresh();"> Aggiorna</a>

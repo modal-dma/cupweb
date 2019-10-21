@@ -3,6 +3,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -23,10 +24,7 @@
   </head>
 
   <body>  
-      <select id="prestazioni" name="groupid" style="width:60%;">
-    	</select>
-     	<a href="#" onclick="refresh();"> Aggiorna</a>
-
+     <%@include file="headerPrestazioni.jsp" %>
            
     <script>
    
@@ -45,12 +43,17 @@
     
     function addOptions(id, optionList)
     {
-    	var select = $(id);    	
-    	for(var i = 0; i < optionList.length; i++)
-    	{
-    		var option = optionList[i];
-    		select.append('<option value="' + option + '">' + option + '</option>');
-    	}
+    	$( id).autocomplete({
+  	      source: optionList
+  	    });
+  	/*
+  	var select = $(id);    	
+  	for(var i = 0; i < optionList.length; i++)
+  	{
+  		var option = optionList[i];
+  		select.append('<option value="' + option + '">' + option + '</option>');
+  	}
+  	*/
     }
     
     
@@ -61,35 +64,23 @@
       {
     	  $("#ajaxloader").show();
     	  
-      	var min = 5000, max = 0;
-      	
-      	var years = $(".year");
-      	
-      	for(var i = 0; i < years.length; i++)
-      	{
-      		var year = years[i];
-      	
-      		if(year.checked)
-      		{
-      			var v = parseInt(year.id);
-      			if(v < min)
-      				min = v;
-      			
-      			if(v > max)
-      				max = v;			
-      		}
-      	}
-      	//var branca = $('#branche').find(":selected").text();
-      	var prestazione = $('#prestazioni').find(":selected").text();
-      	
-      	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
-      			
-      	var url = serverUrl + "/modal/api/1.0.0/pathPrestazioniNelTempo?"
+    	  var prestazione = $('#prestazioni').val();
+  		  var gender = $('#gender').find(":selected").attr("value");
+          var userLimit = $('#userLimit').val();
+          var anni = $('#anni').find(":selected").attr("value");
+          var annoPartenza = $('#annoPartenza').find(":selected").attr("value");
+          var eta = $('#eta').find(":selected").attr("value");
+          			
+          var url = serverUrl + "/modal/api/1.0.0/pathPrestazioniNelTempo?"
 
-      	if(min < 5000) // trovato almeno uno
-      		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
-      	      	
-      	url += "prestazione=" + prestazione;
+              	
+          url += "prestazione=" + prestazione;
+          url += "&gender=" + gender;
+          url += "&limitUser=" + userLimit;
+          url += "&startdate=" + annoPartenza;
+          url += "&anni=" + anni;
+          if(eta != "tutti")
+          	url += "&eta=" + eta;
       	
       	$.ajax({
     	    type: "GET",
