@@ -263,8 +263,7 @@ function refresh()
 	
 	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
 	
-	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
+	url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
 	
 	//if(branca != "Tutti")
 	//	url += "branca=" + branca + "&";
@@ -277,7 +276,7 @@ function refresh()
 	$.ajax({
 	    type: "GET",
 		url: url,
-		async: false,
+		async: true,
 		error: function(e) {
 			$("#ajaxloader").hide();
 			 alert("Impossibile comunicare con il servizio " + e);
