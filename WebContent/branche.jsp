@@ -7,12 +7,19 @@
 <script src="js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+
+<!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
 
-<span class="ui-widget">MinValue: <input id="minValue" value="0"  style="width:80px;"></span>
 <%@include file="headerComuni.jsp" %>
 
 <!-- 
@@ -39,10 +46,14 @@ $.ajax({
 	}
 });
 */
+
+$(document.body).append('<img id="ajaxloader" src="images/ajax-loader.gif" alt="Wait" style="vertical-align: middle; width: 90px; height:90px" />');
+$("#ajaxloader").css({position: 'absolute', top: (($(window).height() / 2) - ($("#ajaxloader").width() / 2)) + "px", left: ($(window).width() - $("#ajaxloader").width()) / 2 + "px", zIndex: 1000});
+
 $.ajax({
     type: "GET",
 	url: serverUrl + "/modal/api/1.0.0/comuni",
-	async: false,
+	async: true,
 	error: function(e) {
 		error({'error': e});
 	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
@@ -55,7 +66,7 @@ $.ajax({
 $.ajax({
 	    type: "GET",
 		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBranca",
-		async: false,
+		async: true,
 		error: function(e) {
 			error({'error': e});
 		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
@@ -97,9 +108,9 @@ function printChart(model)
 		$("#myChart").remove();		
 	}
 	
-	var h = $(document).height();
+	var h = $(document).height() - 20;
 	var w = $("body").width();
-	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '"></canvas>');		
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '" style="margin-top: 10px"></canvas>');		
 	
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
@@ -225,6 +236,7 @@ function printChart(model)
 	    }
 	});
 	
+	$("#ajaxloader").hide();
 	//$("#myChart").css("height", "700px");
 	
 	//myChart.canvas.parentNode.style.height = '300px';	
@@ -238,25 +250,13 @@ function RGB2Color(r,g,b, a)
 
 function refresh()
 {
-	var min = 5000, max = 0;
+	$("#ajaxloader").show();
 	
-	var years = $(".year");
-	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	
+	 var anni = parseInt($('#anni').find(":selected").attr("value"));
+     var annoPartenza = parseInt($('#annoPartenza').find(":selected").attr("value"));
+     
+     var annoFine = annoPartenza + anni;
+     
 	var comune = $('#comuni-auto').val();
 	if(comune == ""  || comune == undefined)
 		comune = $('#comuni').find(":selected").text();
@@ -264,7 +264,7 @@ function refresh()
 	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
 	
 	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
+		url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
 	
 	//if(branca != "Tutti")
 	//	url += "branca=" + branca + "&";
@@ -279,16 +279,22 @@ function refresh()
 		url: url,
 		async: false,
 		error: function(e) {
-			error({'error': e});
+			$("#ajaxloader").hide();
+			 alert("Impossibile comunicare con il servizio " + e);
 		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
 		},
-		success: function( response ) {		    		    
+		success: function( response ) {
+			$("#ajaxloader").hide();
 		    printChart(response);
 		}
 	});
 	
 }
+
+
+
 </script>
+
 
 </body>
 </html>

@@ -1,10 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+  
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <span style="background-color: white; text-align: center;">
   <span class="ui-widget" >
   <label for="prestazioni-auto">Prestazioni: </label>
   <input id="prestazioni-auto" style="width:200px;">
   <select id="prestazioni" name="groupid" style="width:200px;">
-</select> 
+  </select> 
       
    	 Sesso:<select id="gender" name="gender" style="width:70px;">    
       <option value='0'>Tutti</option>
@@ -38,11 +49,25 @@
       <option value='tutti'>Tutti</option>      
       </select>
       Limite:<input type="text" id="userLimit" id="userLimit" value="10000" style="width:60px"/>
-     	<a href="#" onclick="refresh();"> Aggiorna</a>
-     	</span>
+     	<a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
+     </span>
      </span>   
      
      <script>
+     
+     $.ajax({
+    	    type: "GET",
+    		url: serverUrl + "/modal/api/1.0.0/prestazioni",
+    		async: false,
+    		error: function(e) {
+    			//error({'error': e});
+    		    alert("Impossibile comunicare con il servizio " + e);
+    		},
+    		success: function( response ) {		    		    
+    			addOptions("#prestazioni", response);    		
+    		}
+    	});
+     
      function addOptions(id, optionList)
      {
      	$(id + "-auto").autocomplete({

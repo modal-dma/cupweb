@@ -3,18 +3,30 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="js/constants.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">	
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
+
+<!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="css/style.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
-<input type="checkbox" class="year" id="2013" value="2013"> 2013 | <input type="checkbox" class="year" id="2014" value="2014"> 2014 | <input type="checkbox" class="year" id="2015" value="2015"> 2015 | <input type="checkbox" class="year" id="2016" value="2016"> 2016 | <input type="checkbox" class="year" id="2017" value="2017"> 2017 | <input type="checkbox" class="year" id="2018" value="2018"> 2018 | <input type="checkbox" class="year" id="2019" value="2019"> 2019 | <a href="#" onclick="refresh();"> Aggiorna</a> 
-<div class="chart-container" style="position: relative; height:60vh; width:60vw">
-<select id="prestazioni" name="groupid" style="width:60%;">
-    	</select>
-     	<a href="#" onclick="refresh();"> Aggiorna</a>
-</div>
+<span class="ui-widget" >
+  <label for="prestazioni-auto">Prestazioni: </label>
+  <input id="prestazioni-auto" style="width:200px;">
+  <select id="prestazioni" name="groupid" style="width:200px;">
+  </select> 
+  <a href="#" onclick="refresh();"> <i class="fas fa-sync-alt"></i> </a>
+</span>
 <script>
 
 var myChart = null;
@@ -23,8 +35,7 @@ $.ajax({
     type: "GET",
 	url: serverUrl + "/modal/api/1.0.0/prestazioni",
 	async: false,
-	error: function(e) {
-		//error({'error': e});
+	error: function(e) {		
 	    alert("Impossibile comunicare con il servizio " + e);
 	},
 	success: function( response ) {		    		    
@@ -34,45 +45,30 @@ $.ajax({
 
 function addOptions(id, optionList)
 {
-	var select = $(id);    	
-	for(var i = 0; i < optionList.length; i++)
-	{
-		var option = optionList[i];
-		select.append('<option value="' + option + '">' + option + '</option>');
-	}
+	$(id + "-auto").autocomplete({
+ 	      source: optionList
+ 	    });
+   	
+   	var select = $(id);    	
+   	select.append('<option value="none"> &nbsp; </option>');
+   	for(var i = 0; i < optionList.length; i++)
+   	{
+   		var option = optionList[i];
+   		select.append('<option value="' + option + '">' + option + '</option>');
+   	}
 }
 
 function refresh()
 {
 	  $("#ajaxloader").show();
 	  
-	var min = 5000, max = 0;
-	
-	var years = $(".year");
-	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	//var branca = $('#branche').find(":selected").text();
 	var prestazione = $('#prestazioni').find(":selected").text();
 	
-	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
-			
+	var prestazione = $('#prestazioni-auto').val();
+   	if(prestazione == ""  || prestazione == undefined)
+   		prestazione = $('#prestazioni').find(":selected").text();
+		
 	var url = serverUrl + "/modal/api/1.0.0/etaPerPrestazione?"
-
-	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
 	      	
 	url += "prestazione=" + prestazione;
 	
@@ -80,9 +76,10 @@ function refresh()
 	$.ajax({
 	    type: "GET",
 		url: url,
-		async: false,
+		async: true,
 		error: function(e) {
 			
+			$("#ajaxloader").hide();
 		    alert("Impossibile comunicare con il servizio" + e.message);
 		},
 		success: function( response ) {		    		    
@@ -115,7 +112,9 @@ function printChart(model)
 		$("#myChart").remove();		
 	}
 	
-	$(".chart-container").append('<canvas id="myChart"></canvas>');
+	var h = $(document).height() - 40;
+	var w = $("body").width();
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '" style="margin-top: 10px"></canvas>');		
 	
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
@@ -147,11 +146,19 @@ function printChart(model)
 	                    beginAtZero: true
 	                }
 	            }]
-	        }
+	        },
+	        legend: {
+	        	display: false,
+	        	label: 
+	        		{
+	        		
+	        		}
+	        },
 	    }
 	});
 	
-	myChart.canvas.parentNode.style.height = '300px';
+	$("#ajaxloader").hide();
+	//myChart.canvas.parentNode.style.height = '300px';
 	//myChart.canvas.parentNode.style.width = '128px';
 }
 
@@ -160,6 +167,9 @@ function RGB2Color(r,g,b, a)
   return 'rgba(' + 20 + ', ' + color + ', ' + color + ', 0.2)';
 }
 
+$(document.body).append('<img id="ajaxloader" src="images/ajax-loader.gif" alt="Wait" style="vertical-align: middle; width: 90px; height:90px" />');
+$("#ajaxloader").css({position: 'absolute', top: (($(window).height() / 2) - ($("#ajaxloader").width() / 2)) + "px", left: ($(window).width() - $("#ajaxloader").width()) / 2 + "px", zIndex: 1000});
+$("#ajaxloader").hide();
 
 
 </script>
