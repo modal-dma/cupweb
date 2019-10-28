@@ -1,301 +1,117 @@
-<!DOCTYPE html>
-<html>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+
 <head>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="js/constants.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
-<meta charset="ISO-8859-1">
-<title>Bar Chart</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>CUP-iONE - BI Dashboard</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin.css" rel="stylesheet">
+
 </head>
-<body>
-<%@include file="headerComuni.jsp" %>
 
-<!-- 
-<div class="chart-container" style="position: relative; height:80vh; width:90vw">
- -->
-<!-- </div>  -->
-<script>
+<body id="page-top">
 
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/comuni",
-	async: false,
-	error: function(e) {
-		error({'error': e});
-	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-	},
-	success: function( response ) {		    		    
-		addOptions("#comuni", response);
-	}
-});
+<%@include file="navbar.jsp" %>
 
-var urlParams = new URLSearchParams(location.search);
-var type = urlParams.get('type');  
 
-var myChart = null;
+  <div id="wrapper">
 
-var method = type == "disp" ? "attesaDisponibilitaPerBranca" : "attesaPerBranca";
-$.ajax({
-	    type: "GET",
-		url: serverUrl + "/modal/api/1.0.0/" + method,
-		async: false,
-		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-		},
-		success: function( response ) {		    		    
-		    printChart(response);
-		}
-	});
-	
-	
-function printChart(model)
-{
-	var color = Chart.helpers.color;
-	
-	if(myChart != null)
-	{
-		$("#myChart").remove();		
-	}
-	
-	var total = 0;
-	
-	for(var i = 0; i < model.data[3].length; i++)
-	{
-		total += model.data[3][i];	
-	}
-	
-	var h = $(document).height() - 40;
-	var w = $("body").width();
-	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '"></canvas>');	
-	
-	var ctx = document.getElementById('myChart').getContext('2d');
-	myChart = new Chart(ctx, {
-    	type: 'bar',
-    	data: {
-	        labels: model.labels,
-	        datasets: [{
-	            label: 'Min gg di attesa',
-	            data: model.data[0],	            
-	            backgroundColor: 'rgba(255, 99, 132, 1)',
-	            /*
-	            borderColor: [
-	                'rgba(255, 99, 132, 1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],*/
-	            borderWidth: 1
-	        }, 
-	        {
-	            label: 'Max gg di attesa',
-	            data: model.data[1],
-	            backgroundColor: 'rgba(54, 162, 235, 1)',	            
-	            /*
-	            borderColor: [
-	                'rgba(255, 99, 132, 1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],*/
-	            borderWidth: 1
-	        }, 
-	        {
-	            label: 'Media gg di attesa',
-	            data: model.data[2],	            
-	            backgroundColor: 'rgba(153, 102, 255, 1)',
-	            /*
-	            borderColor: [
-	                'rgba(255, 99, 132, 1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],*/
-	            borderWidth: 1
-	        }]
-	    },
-	    options: {
-	    	aspectRatio: 4/3,
-	    	responsive: true,
-	        scales: {
-	            yAxes: [{
-	                ticks: {
-	                    beginAtZero: true
-	                }
-	            }]
-	        },
-	        
-	        tooltips: {
-	            // Disable the on-canvas tooltip
-	            enabled: false,
+    <!-- Sidebar -->
+    <%@include file="sidebar.jsp" %>
+    <div id="content-wrapper">
 
-	            custom: function(tooltipModel) {
-	                // Tooltip Element
-	                var tooltipEl = document.getElementById('chartjs-tooltip');
+      <div class="container-fluid">
 
-	                // Create element on first render
-	                if (!tooltipEl) {
-	                    tooltipEl = document.createElement('div');
-	                    tooltipEl.id = 'chartjs-tooltip';
-	                    tooltipEl.innerHTML = '<table></table>';
-	                    document.body.appendChild(tooltipEl);
-	                }
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Attesa per branca</li>
+        </ol>          
 
-	                // Hide if no tooltip
-	                if (tooltipModel.opacity === 0) {
-	                    tooltipEl.style.opacity = 0;
-	                    return;
-	                }
+		<a name="distpresteta"/>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-bar"></i>
+                Giorni di attesa per branca</div>
+              <div class="card-body">
+              	<iframe width="100%" height="600" src="attesagraph.jsp?type=disp" frameBorder="0" scrolling="no"></iframe>                
+              </div>
+              <div class="card-footer small text-muted">Periodo 2014-2019</div>
+            </div>
+          </div>          
+        </div>
+      </div>
+      </div>
+      <!-- /.container-fluid -->
 
-	                // Set caret Position
-	                tooltipEl.classList.remove('above', 'below', 'no-transform');
-	                if (tooltipModel.yAlign) {
-	                    tooltipEl.classList.add(tooltipModel.yAlign);
-	                } else {
-	                    tooltipEl.classList.add('no-transform');
-	                }
+      <!-- Sticky Footer -->
+      <%@include file="footer.jsp" %>
 
-	                function getBody(bodyItem) {
-	                    return bodyItem.lines;
-	                }
+    </div>
+    <!-- /.content-wrapper -->
 
-	                // Set Text
-	                if (tooltipModel.body) {
-	                    var titleLines = tooltipModel.title || [];
-	                    var bodyLines = tooltipModel.body.map(getBody);
+  </div>
+  <!-- /#wrapper -->
 
-	                    var innerHtml = '<thead>';
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
 
-	                    titleLines.forEach(function(title) {
-	                        innerHtml += '<tr><th>' + title + '</th></tr>';
-	                    });
-	                    innerHtml += '</thead><tbody>';
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	                    bodyLines.forEach(function(body, i) {
-	                        var colors = tooltipModel.labelColors[i];
-	                        var style = 'background:#DDD';// + colors.backgroundColor;
-	                        style += '; border-color:' + colors.borderColor;
-	                        style += '; border-width: 2px';
-	                        var span = '<span style="' + style + '"></span>';
-	                        
-	                        innerHtml += '<tr><td>' + span + body + '</td></tr></tr><tr><td>Totale: ' + total + '</td>';
-	                    });
-	                    innerHtml += '</tbody>';
+<script src="js/constants.js"></script>
 
-	                    var tableRoot = tooltipEl.querySelector('table');
-	                    tableRoot.innerHTML = innerHtml;
-	                }
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-	                // `this` will be the overall tooltip
-	                var position = this._chart.canvas.getBoundingClientRect();
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-	                // Display, position, and set styles for font
-	                tooltipEl.style.opacity = 1;
-	                tooltipEl.style.position = 'absolute';
-	                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-	                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-	                tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-	                tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-	                tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-	                tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-	                tooltipEl.style.pointerEvents = 'none';
-	                tooltipEl.style.backgroundColor = "#DDD";
-	            }
-	        }
-	    }
-	});
-	
-	myChart.canvas.parentNode.style.height = '300px';
-	//myChart.canvas.parentNode.style.width = '128px';
-}
+  <!-- Page level plugin JavaScript-->
+  <script src="vendor/chart.js/Chart.min.js"></script>
 
-function RGB2Color(r,g,b, a)
-{
-  return 'rgba(' + 20 + ', ' + color + ', ' + color + ', 0.2)';
-}
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin.min.js"></script>
 
-function refresh()
-{
-	var min = 5000, max = 0;
-	
-	var years = $(".year");
-	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	
-	//var branca = $('#branche').find(":selected").text();
-	var comune = $('#comuni').find(":selected").text();
-	
-	var url = serverUrl + "/modal/api/1.0.0/" + method + "?";
-	
-	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
-	
-	//if(branca != "Tutti")
-	//	url += "branca=" + branca + "&";
-	
-	if(comune != "Tutti")
-		url += "comune=" + comune;
-	
-	$.ajax({
-	    type: "GET",
-		url: url,
-		async: false,
-		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-		},
-		success: function( response ) {		    		    
-		    printChart(response);
-		}
-	});
-	
-}
-
-/*
-var count = model.data.length;
-var backgroundColorArray = [];
-
-var frequency = .3;
-var amplitude = 127;
-var center = 128;
-var phase = 128;
-for(var i = 0; i < count; i++)
-{
-	red   = Math.sin(frequency*i+2+phase) * width + center;
-    green = Math.sin(frequency*i+0+phase) * width + center;
-    blue  = Math.sin(frequency*i+4+phase) * width + center;
-
-    
-	backgroundColorArray.push('rgba(' + 20 + ', ' + color + ', ' + color + ', 0.2)');
-	
-	   // Note that &#9608; is a unicode character that makes a solid block
-	   document.write( '<font style="color:' + RGB2Color(v,v,v) + '">&#9608;</font>');
-	}
-	
-	var color = 20 + i * 2;
-
-}
-*/
-</script>
 
 </body>
+
 </html>

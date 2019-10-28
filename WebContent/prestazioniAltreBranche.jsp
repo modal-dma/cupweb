@@ -5,16 +5,26 @@
 <script src="js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+<script src="js/widgetLoader.js"></script>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+
+<!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+ 
+ <link rel="stylesheet" href="css/style.css">
+
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
-
-<input type="checkbox" class="year" id="2013" value="2013"> 2013 | <input type="checkbox" class="year" id="2014" value="2014"> 2014 | <input type="checkbox" class="year" id="2015" value="2015"> 2015 | <input type="checkbox" class="year" id="2016" value="2016"> 2016 | <input type="checkbox" class="year" id="2017" value="2017"> 2017 | <input type="checkbox" class="year" id="2018" value="2018"> 2018 | <input type="checkbox" class="year" id="2019" value="2019"> 2019
-
-<br/>
-
- <a href="#" onclick="refresh();"> Aggiorna</a>
+<span class="ui-widget">
+<%@include file="widgetAnni.jsp" %>
+ <a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
+ </span>
 <!-- 
 <div class="chart-container" style="position: relative; height:80vh; width:90vw">
  -->
@@ -45,8 +55,7 @@ $.ajax({
 		url: serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche",
 		async: false,
 		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+			alert("Impossibile comunicare con il servizio: " + e.message);
 		},
 		success: function( response ) {		    		    
 		    printChart(response);
@@ -78,7 +87,10 @@ function printChart(model)
 		$("#myChart").remove();		
 	}
 	
-	$("body").append('<canvas id="myChart"></canvas>');
+	var h = $(document).height() - 20;
+	var w = $("body").width();
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '" style="margin-top: 10px"></canvas>');		
+
 		
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
@@ -120,8 +132,6 @@ function printChart(model)
 	    }
 	});
 	
-	myChart.canvas.parentNode.style.height = '300px';	
-	//myChart.canvas.parentNode.style.width = '128px';
 }
 
 function RGB2Color(r,g,b, a)
@@ -129,42 +139,17 @@ function RGB2Color(r,g,b, a)
   return 'rgba(' + 20 + ', ' + color + ', ' + color + ', 0.2)';
 }
 
-function addOptions(id, optionList)
-{
-	var select = $(id);
-	select.append('<option value="tutti" selected>Tutti</option>');
-	
-	for(var i = 0; i < optionList.length; i++)
-	{
-		var option = optionList[i];
-		select.append('<option value="' + option + '">' + option + '</option>');
-	}
-}
-
 function refresh()
 {
-	var min = 5000, max = 0;
 	
-	var years = $(".year");
+	 var anni = parseInt($('#anni').find(":selected").attr("value"));
+     var annoPartenza = parseInt($('#annoPartenza').find(":selected").attr("value"));
+     
+     var annoFine = annoPartenza + anni;
+     
+	 var url = serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche?";
 	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	var url = serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche?";
-	
-	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
+	 url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
 	
 	$.ajax({
 	    type: "GET",

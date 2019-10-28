@@ -42,34 +42,8 @@
           <li class="breadcrumb-item">
             <a href="#">Dashboard</a>
           </li>
-          <li class="breadcrumb-item active">Distribuzione eta</li>
-        </ol>
-      
-      <a name="disteta"/>
-        <div class="row">
-          <div class="col-lg-8">
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fas fa-chart-bar"></i>
-                Distribuzione età</div>
-              <div class="card-body">
-                <canvas id="myBarChart" width="100%" height="50"></canvas>
-              </div>
-              <div class="card-footer small text-muted">Periodo 2014-2019</div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fas fa-chart-pie"></i>
-                Distribuzione età</div>
-              <div class="card-body">
-                <canvas id="myPieChart" width="100%" height="100"></canvas>
-              </div>
-              <div class="card-footer small text-muted">Periodo 2014-2019</div>
-            </div>
-          </div>
-        </div>
+          <li class="breadcrumb-item active">Prestazioni-Branche</li>
+        </ol>          
 
 		<a name="distpresteta"/>
         <div class="row">
@@ -77,9 +51,9 @@
             <div class="card mb-3">
               <div class="card-header">
                 <i class="fas fa-chart-bar"></i>
-                Distribuzione Prestazioni per Eta</div>
+                Mappa Prestazioni-Branche</div>
               <div class="card-body">
-              	<iframe width="100%" height="600" src="etaPrestazioni.jsp" frameBorder="0" scrolling="no"></iframe>                
+              	<iframe width="100%" height="600" src="bubble.jsp" frameBorder="0" scrolling="yes"></iframe>                
               </div>
               <div class="card-footer small text-muted">Periodo 2014-2019</div>
             </div>
@@ -137,89 +111,6 @@
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin.min.js"></script>
 
-<script src="js/widgetLoader.js"></script>
-
-  <!-- Demo scripts for this page-->  
-  <script>
-  Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-  Chart.defaults.global.defaultFontColor = '#292b2c';
-
-  var url = serverUrl + "/modal/api/1.0.0/etaEx"
-$(document).ready(function() {
-	
-	$("#ajaxloader").show();
-	
-	$.ajax({
-	    type: "GET",
-		url: url,
-		async: true,
-		error: function(e) {
-	
-			$("#ajaxloader").hide();
-		    alert("Impossibile comunicare con il servizio" + e.message);
-		},
-		success: function( response ) {
-			$("#ajaxloader").hide();
-		    printChart(response);
-		    printPieChart(response);
-		}
-	});
-});
-		    	    	      	
-  function printChart(model)
-  {
-	  // Bar Chart Example
-	  var ctx = document.getElementById("myBarChart");
-	  var myLineChart = new Chart(ctx, {
-	    type: 'bar',
-	    data: {
-	      labels: model.labels,
-	      datasets: [{
-	        label: "Prestazioni:",
-	        backgroundColor: colors,
-	        borderColor: "rgba(2,117,216,1)",
-	        data: model.data[0]
-	      }],
-	    },
-	    options: {
-	      scales: {
-	        xAxes: [{
-	          gridLines: {
-	            display: false
-	          }	          
-	        }],
-	        yAxes: [{
-	          ticks: {
-	            maxTicksLimit: 5
-	          },
-	          gridLines: {
-	            display: true
-	          }
-	        }],
-	      },
-	      legend: {
-	        display: false
-	      }
-	    }
-	  });
-  }
-  
-  function printPieChart(model)
-  {
-	// Pie Chart Example
-	  var ctx = document.getElementById("myPieChart");
-	  var myPieChart = new Chart(ctx, {
-	    type: 'pie',
-	    data: {
-	      labels: model.labels,
-	      datasets: [{
-	        data: model.data[0],
-	        backgroundColor: colors
-	      }],
-	    },
-	  });
-  }
-  </script>
 
 </body>
 

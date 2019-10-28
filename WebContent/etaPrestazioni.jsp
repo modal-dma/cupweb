@@ -4,35 +4,49 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="js/constants.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script src="js/widgetLoader.js"></script>	
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
+<link rel="stylesheet" href="css/style.css">
+<!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
  <span class="ui-widget" >
-età: <select id="eta" name="groupid" style="width:60px;">
+età: <select id="eta" name="groupid" style="width:80px;">
     	</select>
-     	<a href="#" onclick="refresh();"> Aggiorna</a>
+    	<a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
 </span>
-<div class="chart-container" style="position: relative; height:60vh; width:60vw">
 </div>
 <script>
 
 var myChart = null;
 
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/eta",
-	async: false,
-	error: function(e) {
-		//error({'error': e});
-	    alert("Impossibile comunicare con il servizio " + e);
-	},
-	success: function( response ) {		    		    
-		addOptions("#eta", response);    		
-	}
+$(document).ready(function() {
+	
+	$("#ajaxloader").show();
+	
+	$.ajax({
+	    type: "GET",
+		url: serverUrl + "/modal/api/1.0.0/eta",
+		async: true,
+		error: function(e) {
+			$("#ajaxloader").hide();
+			//error({'error': e});
+		    alert("Impossibile comunicare con il servizio " + e);
+		},
+		success: function( response ) {
+			$("#ajaxloader").hide();
+			addOptions("#eta", response);    		
+		}
+	});	
 });
+
 
 function addOptions(id, optionList)
 {
@@ -47,34 +61,10 @@ function addOptions(id, optionList)
 function refresh()
 {
 	  $("#ajaxloader").show();
-	  
-	var min = 5000, max = 0;
-	
-	var years = $(".year");
-	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	//var branca = $('#branche').find(":selected").text();
+	  	
 	var eta = $('#eta').find(":selected").text();
-	
-	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
 			
 	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerEta?"
-
-	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
 	      	
 	url += "eta=" + eta;
 	
@@ -82,12 +72,13 @@ function refresh()
 	$.ajax({
 	    type: "GET",
 		url: url,
-		async: false,
+		async: true,
 		error: function(e) {
-			
+			$("#ajaxloader").hide();
 		    alert("Impossibile comunicare con il servizio" + e.message);
 		},
-		success: function( response ) {		    		    
+		success: function( response ) {
+			$("#ajaxloader").hide();
 		    printChart(response);
 		}
 	});	    	    	      				     
@@ -117,7 +108,9 @@ function printChart(model)
 		$("#myChart").remove();		
 	}
 	
-	$(".chart-container").append('<canvas id="myChart"></canvas>');
+	var h = $(document).height() - 20;
+	var w = $("body").width();
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '" style="margin-top: 10px"></canvas>');		
 	
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
@@ -153,7 +146,7 @@ function printChart(model)
 	    }
 	});
 	
-	myChart.canvas.parentNode.style.height = '300px';
+	//myChart.canvas.parentNode.style.height = '300px';
 	//myChart.canvas.parentNode.style.width = '128px';
 }
 

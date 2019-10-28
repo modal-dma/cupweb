@@ -6,7 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">	
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css">
-
+<script src="js/widgetLoader.js"></script>
 <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
@@ -21,42 +21,15 @@
 </head>
 <body>
 <span class="ui-widget" >
-  <label for="prestazioni-auto">Prestazioni: </label>
-  <input id="prestazioni-auto" style="width:200px;">
-  <select id="prestazioni" name="groupid" style="width:200px;">
-  </select> 
+  <%@include file="widgetPrestazioni.jsp" %>
+  
   <a href="#" onclick="refresh();"> <i class="fas fa-sync-alt"></i> </a>
 </span>
 <script>
 
 var myChart = null;
 
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/prestazioni",
-	async: false,
-	error: function(e) {		
-	    alert("Impossibile comunicare con il servizio " + e);
-	},
-	success: function( response ) {		    		    
-		addOptions("#prestazioni", response);    		
-	}
-});
 
-function addOptions(id, optionList)
-{
-	$(id + "-auto").autocomplete({
- 	      source: optionList
- 	    });
-   	
-   	var select = $(id);    	
-   	select.append('<option value="none"> &nbsp; </option>');
-   	for(var i = 0; i < optionList.length; i++)
-   	{
-   		var option = optionList[i];
-   		select.append('<option value="' + option + '">' + option + '</option>');
-   	}
-}
 
 function refresh()
 {

@@ -10,7 +10,7 @@
 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<span style="background-color: white; text-align: center;">
+<div style="background-color: white; text-align: center;">
   <span class="ui-widget" >
   <label for="prestazioni-auto">Prestazioni: </label>
   <input id="prestazioni-auto" style="width:200px;">
@@ -51,7 +51,7 @@
       Limite:<input type="text" id="userLimit" id="userLimit" value="10000" style="width:60px"/>
      	<a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
      </span>
-     </span>   
+     </div>   
      
      <script>
      

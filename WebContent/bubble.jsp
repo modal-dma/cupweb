@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/constants.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+
 <meta charset="ISO-8859-1">
+
+<!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+ 
+ <link rel="stylesheet" href="css/style.css">
+
+<script src="js/widgetLoader.js"></script>
+
 <title>Bar Chart</title>
 </head>
 <body>
-<input type="checkbox" class="year" id="2013" value="2013"> 2013 | <input type="checkbox" class="year" id="2014" value="2014"> 2014 | <input type="checkbox" class="year" id="2015" value="2015"> 2015 | <input type="checkbox" class="year" id="2016" value="2016"> 2016 | <input type="checkbox" class="year" id="2017" value="2017"> 2017 | <input type="checkbox" class="year" id="2018" value="2018"> 2018 | <input type="checkbox" class="year" id="2019" value="2019"> 2019 | <a href="#" onclick="refresh();"> Aggiorna</a> 
+<span class="ui-widget">
+<%@include file="widgetAnni.jsp" %>
+<a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
+
+</span>
 
 <script>
 
@@ -17,42 +35,51 @@ var urlParams = new URLSearchParams(location.search);
 var startdate = urlParams.get('startdate');  
 var enddate = urlParams.get('enddate'); 
 
-if(startdate && enddate)
-{
-$.ajax({
-	    type: "GET",
-		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune?startdate="+startdate + "&enddate="+enddate,
-		async: false,
-		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-		},
-		success: function( response ) {		    		    
-		    printChart(response);
-		}
-	});
-}
-else
-{
-	$.ajax({
-	    type: "GET",
-		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune",
-		async: false,
-		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-		},
-		success: function( response ) {		    		    
-		    printChart(response);
-		}
-});
+$(document).ready(function() {
+	
+	console.debug("start");
+	
+	$("#ajaxloader").show();
 
+	if(startdate && enddate)
+	{
+		$.ajax({
+			    type: "GET",
+				url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune?startdate="+startdate + "&enddate="+enddate,
+				async: true,
+				error: function(e) {
+					$("#ajaxloader").hide();
+					alert("Impossibile comunicare con il servizio " + e.message);
+				},
+				success: function( response ) {
+					console.debug("hide");
+					$("#ajaxloader").hide();
+				    printChart(response);
+				}
+			});
 	}
+	else
+	{
+		$.ajax({
+		    type: "GET",
+			url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune",
+			async: true,
+			error: function(e) {
+				error({'error': e});
+			       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+			},
+			success: function( response ) {		    		    
+			    printChart(response);
+			}
+		});
+	
+	}
+});
 	
 function printChart(model)
 {
 	// Draw areas for day stacked by brand
-	var svg = dimple.newSvg("body", 1600, 800);
+	var svg = dimple.newSvg("body", 2000, 800);
 	var data = [];
 	
 	var count = model.values.length;
@@ -65,11 +92,11 @@ function printChart(model)
 		data.push(point);
 	}
 		
-	var h = $(document).height() - 200;
+	var h = $(document).height() - 300;
 	var w = $("body").width() - 200;
 	
 	var myChart = new dimple.chart(svg, data);
-    myChart.setBounds(200, 0, w, h)
+    myChart.setBounds(200, 30, w, h)
     var x = myChart.addCategoryAxis("x", "Comune");    
     myChart.addCategoryAxis("y", "Branca");
     myChart.addMeasureAxis("z", "Prestazioni");
@@ -85,26 +112,12 @@ function RGB2Color(r,g,b, a)
 
 function refresh()
 {
-	var min = 5000, max = 0;
+	var anni = parseInt($('#anni').find(":selected").attr("value"));
+    var annoPartenza = parseInt($('#annoPartenza').find(":selected").attr("value"));
+    
+    var annoFine = annoPartenza + anni;   
 	
-	var years = $(".year");
-	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	
-	location.href = "bubble.jsp?startdate=01/01/" + min + "&enddate=31/12/" + max;
+	location.href = "bubble.jsp?startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine;
 	
 }
 

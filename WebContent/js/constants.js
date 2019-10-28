@@ -3,8 +3,8 @@ const localServerUrl = "http://localhost:8090";
 
 
 	
-//const serverUrl = localServerUrl;
-const serverUrl = remoteServerUrl;
+const serverUrl = localServerUrl;
+//const serverUrl = remoteServerUrl;
 
 const colors = [
 	"#63b598", "#ce7d78", "#ea9e70", "#a48a9e", "#c6e1e8", "#648177" ,"#0d5ac1" ,
