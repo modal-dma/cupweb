@@ -3,27 +3,27 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Branche</title>
+    <title>Prestazioni</title>
 
 <!-- CSS Files -->
-<link type="text/css" href="css/base.css" rel="stylesheet" />
-<link type="text/css" href="css/Icicle.css" rel="stylesheet" />
+<link type="text/css" href="../css/base.css" rel="stylesheet" />
+<link type="text/css" href="../css/Icicle.css" rel="stylesheet" />
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
-<script language="javascript" type="text/javascript" src="js/jit.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jit.js"></script>
 
 <!-- Example File -->
-<script language="javascript" type="text/javascript" src="js/prenotazionePerBrancaDopoBranca.js"></script>
+<script language="javascript" type="text/javascript" src="../js/prenotazionePerBrancaDopoBranca.js"></script>
 
   </head>
 
-  <body>  
-      <select id="branche" name="groupid" style="width:60%;">
+  <body>    
+      <select id="prestazioni" name="groupid" style="width:60%;">
     	</select>
      	<a href="#" onclick="refresh();"> Aggiorna</a>
 
@@ -32,14 +32,14 @@
     
     $.ajax({
         type: "GET",
-    	url: serverUrl + "/modal/api/1.0.0/branche",
+    	url: serverUrl + "/modal/api/1.0.0/prestazioni",
     	async: false,
     	error: function(e) {
     		//error({'error': e});
     	    alert("Impossibile comunicare con il servizio " + e);
     	},
     	success: function( response ) {		    		    
-    		addOptions("#branche", response);    		
+    		addOptions("#prestazioni", response);    		
     	}
     });
     
@@ -59,7 +59,7 @@
       
       function refresh()
       {
-    	  $("#ajaxloader").show();
+    	  showLoader();
     	  
       	var min = 5000, max = 0;
       	
@@ -80,16 +80,16 @@
       		}
       	}
       	//var branca = $('#branche').find(":selected").text();
-      	var branca = $('#branche').find(":selected").text();
+      	var prestazione = $('#prestazioni').find(":selected").text();
       	
       	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
       			
-      	var url = serverUrl + "/modal/api/1.0.0/prenotazioniPerBrancaDopoBranca?"
+      	var url = serverUrl + "/modal/api/1.0.0/prenotazioniPerPrestazioneDopoPrestazione?"
 
       	if(min < 5000) // trovato almeno uno
       		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
       	      	
-      	url += "branca=" + branca;
+      	url += "prestazione=" + prestazione;
       	
       	$.ajax({
     	    type: "GET",
@@ -97,21 +97,16 @@
     		async: true,
     		error: function(e) {
     			//error({'error': e});
-    			$("#ajaxloader").hide();
+    			hideLoader();
     		    alert("Impossibile comunicare con il servizio " + e);
     		},
     		success: function( model ) {
-    			$("#ajaxloader").hide();
+    			hideLoader();
     			var count = model.data[0].length;
-    			var total = 0;
-    			for(var i = 0; i < count; i++)
-        		{
-    				total += model.data[0][i];
-        		}
     			
     			var json = {
-    					"id": branca, 
-    					"name": branca,
+    					"id": prestazione, 
+    					"name": prestazione,
     				    "data": {
     				      "$area": count,
     				      "$dim": count,
@@ -120,13 +115,13 @@
     				    "children": []
     			};
     			
-    			for(var i = 0; i < count; i++)
+    			for(var i = 0; i < count && i < 15; i++)
     			{
     				var data = model.data[0][i];
     				var label = model.labels[i];
     				var child = {
     					"id": label, 
-        				"name": label + " (" + (data / total * 100).toFixed(1) + "%)",
+        				"name": label + " (" + data + ")",
         				"data": {
         				      "$area": data,
         				      "$dim": data,
@@ -158,7 +153,7 @@
 		
 		$(document.body).append('<img id="ajaxloader" src="images/ajax-loader.gif" alt="Wait" style="vertical-align: middle; width: 90px; height:90px" />');
 		$("#ajaxloader").css({position: 'absolute', top: (($(window).height() / 2) - ($("#ajaxloader").width() / 2)) + "px", left: ($(window).width() - $("#ajaxloader").width()) / 2 + "px", zIndex: 1000});
-		$("#ajaxloader").hide();
+		hideLoader();
 
 		
 		</script>

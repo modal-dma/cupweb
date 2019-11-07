@@ -4,61 +4,45 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+
+<!-- Custom fonts for this template-->
+  <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="../vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+
+<script src="../js/widgetLoader.js"></script>
 
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
-<span style="background-color: white; text-align: center;">
+<div class="menubar">
   <span class="ui-widget" >
+  
   <label for="prestazioni-auto">Prestazioni: </label>
   <input id="prestazioni-auto" style="width:150px;">
   <select id="prestazioni" name="groupid" style="width:150px;">
+  </select> 
+  
+  <label for="comuni-auto">Comuni: </label>
+ <input id="comuni-auto" style="width:300px;">&nbsp;
+ <select id="comuni" name="groupid" style="width:100px;">
 </select> 
-      <label for="comuni-auto">Comuni: </label>
- 	  <input id="comuni-auto" style="width:150px;">
- 	<select id="comuni" name="groupid" style="width:150px;">
- 	</select> 
- 	<!-- 
-   	 Sesso:<select id="gender" name="gender" style="width:70px;">    
-      <option value='0'>Tutti</option>
-      <option value='1'>Maschio</option>
-      <option value='2'>Femmina</option>
-      </select>
-      Anno:<select id="annoPartenza" name="annoPartenza" style="width:70px;">    
-      <option value='2014'>2014</option>
-      <option value='2015'>2015</option>
-      <option value='2016'>2016</option>
-      <option value='2017'>2017</option>
-      <option value='2018'>2018</option>
-      <option value='2019'>2019</option>
-      </select>
-      Durata anni:<select id="anni" name="anni" style="width:40px;">         
-      <option value='1'>1</option>
-      <option value='2'>2</option>
-      <option value='3'>3</option>
-      <option value='4'>4</option>
-      <option value='5'>5</option>
-      </select>
-      Eta:<select id="eta" name="eta" style="width:65px;">         
-      <option value='0-14'>0-14</option>
-      <option value='15-30'>15-30</option>
-      <option value='30-40'>30-40</option>
-      <option value='40-50'>40-50</option>
-      <option value='50-60'>50-60</option>
-      <option value='60-70'>60-70</option>
-      <option value='70-90'>70-90</option>            
-      <option value='>90'>>90</option>
-      <option value='tutti'>Tutti</option>      
-      </select>
-       -->
-      Minimo: <input type="text" id="minCount" id="minCount" value="20" style="width:40px"/>
-     	<a href="#" onclick="refresh();"> Aggiorna</a>
-     	</span>
-     </span>   
+
+      Minimo: <input type="text" id="minCount" id="minCount" value="500" style="width:60px"/>
+     <a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
+     <span id="conteggio"></span>
+   </span>
+</span>   
+</div>
      
 <!-- 
 <select id="prestazioni" name="groupid" style="width:20%;">
@@ -66,43 +50,50 @@
 -->
      	
 <script>
-
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/comuni",
-	async: false,
-	error: function(e) {
-		error({'error': e});
-	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-	},
-	success: function( response ) {		    		    
-		addOptions1("#comuni", response);
-	}
-});
-
 var prestazioniDataset;
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/prestazioniConteggio",
-	async: false,
-	error: function(e) {
-		//error({'error': e});
-	    alert("Impossibile comunicare con il servizio " + e);
-	},
-	success: function( response ) {
-		prestazioniDataset = response,
-		addOptions("#prestazioni", response);    		
-	}
+$(document).ready(function() {
+	
+	showLoader();
+	
+	$.ajax({
+	    type: "GET",
+		url: serverUrl + "/modal/api/1.0.0/prestazioniConteggio",
+		async: true,
+		error: function(e) {
+			//error({'error': e});
+			hideLoader();
+		    alert("Impossibile comunicare con il servizio " + e);
+		},
+		success: function( response ) {			
+			prestazioniDataset = response,
+			addOptionsPrest("#prestazioni", response);
+			refresh();
+		}
+	});	
+	
+	$.ajax({
+	    type: "GET",
+		url: serverUrl + "/modal/api/1.0.0/comuni",
+		async: true,
+		error: function(e) {
+			hideLoader();
+		    alert("Impossibile comunicare con il servizio" + e.message);
+		},
+		success: function( response ) {		
+			addComuni("#comuni", response);
+		}
+	});	
+	
 });
 
-function addOptions1(id, optionList)
+function addComuni(id, optionList)
 {
 	$(id + "-auto").autocomplete({
-	      source: optionList
-	    });
+     source: optionList
+   });
 	
 	var select = $(id);    	     	
-	select.append('<option value="tutti" selected> </option>');
+	select.append('<option value="tutti" selected>Tutti</option>');
 	for(var i = 0; i < optionList.length; i++)
 	{
 		var option = optionList[i];
@@ -110,7 +101,8 @@ function addOptions1(id, optionList)
 	}
 	
 }
-function addOptions(id, model)
+
+function addOptionsPrest(id, model)
 {
 	var items = [];
 	
@@ -125,12 +117,21 @@ function addOptions(id, model)
 	      source: items,
 	      select: function( event, ui ) {
 	    	  //console.log(ui);
-	    	  $('#conteggio').text(' totale:' + ui.item.count);
+	    	 $('#conteggio').text(' totale:' + ui.item.count);
+	    	 
+	    	 
 	      }
 	    });
 
+$( id + "-auto" ).on( "autocompleteselect", function( event, ui ) {
+		
+		$(id + " option:selected").prop("selected",false);
+		$(id + " option[value='" + ui.item.value + "']")
+		        .prop("selected",true);
+		
+	} );
+	
 	var select = $(id);    	
-	select.append('<option value="tutti" selected> </option>');
 	for(var i = 0; i < model.labels.length; i++)
 	{
 		var option = model.labels[i];
@@ -141,17 +142,17 @@ function addOptions(id, model)
 
 function refresh()
 {
-	  $("#ajaxloader").show();
+	  showLoader();
 	
 	//var prestazione = $('#prestazioni').find(":selected").text();
 	var prestazione = $('#prestazioni-auto').val();
-    if(prestazione == ""  || prestazione == undefined)
+    if(prestazione == ""  || prestazione == " " || prestazione == undefined)
     	prestazione = $('#prestazioni').find(":selected").text();
 		
 	var comune = $('#comuni-auto').val();
 	if(comune == ""  || comune == undefined)
 		comune = $('#comuni').find(":selected").text();
-	
+			
 	var minCount = $('#minCount').val();
 	
 //	var gender = $('#gender').find(":selected").attr("value");
@@ -164,7 +165,9 @@ function refresh()
 
     	
 	url += "prestazione=" + prestazione;
-	url += "&comune=" + comune;
+	if(comune != "Tutti")
+		url += "&comune=" + comune;
+	
 	url += "&minCount=" + minCount;
 //	url += "&gender=" + gender;
 //  	url += "&startdate=" + annoPartenza;
@@ -178,11 +181,11 @@ function refresh()
 		async: true,
 		error: function(e) {
 			//error({'error': e});
-			$("#ajaxloader").hide();
+			hideLoader();
 		    alert("Impossibile comunicare con il servizio " + e);
 		},
 		success: function( model ) {
-			$("#ajaxloader").hide();
+			hideLoader();
 			
 			
 		    printChart(model);    			    			
@@ -227,11 +230,11 @@ function printChart(model)
 		var h = $(document).height() - 300;
 		var w = $("body").width() - 200;
 		
-		$('#conteggiofuorisede').text(' fuori sede ' + totale + " su ");
+		//$('#conteggiofuorisede').text(' fuori sede ' + totale + " su ");
 		myChart = new dimple.chart(svg, data);
 		myChart.setBounds(200, 30, w, h)
-	    var x = myChart.addCategoryAxis("x", "Residenza");    
-	    myChart.addCategoryAxis("y", "UOP");
+	    var x = myChart.addCategoryAxis("y", "Residenza");    
+	    myChart.addCategoryAxis("x", "UOP");
 	    myChart.addMeasureAxis("z", "Prestazioni");
 	    var s = myChart.addSeries("Prestazioni", dimple.plot.bubble);
 	    //myChart.addLegend(140, 10, 360, 20, "right");

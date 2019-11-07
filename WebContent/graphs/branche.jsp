@@ -4,58 +4,59 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+<script src="../js/widgetLoader.js"></script>
+<!-- Custom fonts for this template-->
+  <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="../vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
 </head>
 <body>
-<span class="ui-widget">MinValue: <input id="minValue" value="0"  style="width:80px;"></span>
+
 <%@include file="headerComuni.jsp" %>
 
 <script>
 
-$.ajax({
-    type: "GET",
-	url: serverUrl + "/modal/api/1.0.0/comuni",
-	async: false,
-	error: function(e) {
-		error({'error': e});
-	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-	},
-	success: function( response ) {		    		    
-		addOptions("#comuni", response);
-	}
-});
-
 var myChart = null;
 
-$.ajax({
+$(document).ready(function() {
+	
+	showLoader();
+	
+	$.ajax({
 	    type: "GET",
 		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBranca",
-		async: false,
+		async: true,
 		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+			showLoader();
+			alert("Impossibile comunicare con il servizio " + e.message);
 		},
 		success: function( response ) {		    		    
 		    printChart(response);
 		}
 	});
 	
+});
 	
 function printChart(model)
 {
 	var count = model.data[0].length;
 	var backgroundColorArray = [];
-	var frequency = .2;
+	var frequency = .3;
 	var amplitude = 127;
 	var center = 128;
-	var phase = 1;
+	var phase = 128;
 	
 	var total = 0;
 	var valuesHashMap = { };
-	
+
 	for(var i = 0; i < count; i++)
 	{
 		var red   = Math.sin(frequency*i+2+phase) * amplitude + center;
@@ -67,25 +68,25 @@ function printChart(model)
 		
 		total += model.data[0][i];
 		
-		valuesHashMap[model.labels[i] + ": " + model.data[0][i]] = model.data[0][i];
+		valuesHashMap[model.labels[i]] = model.data[0][i];
 	}
-
+	
 	if(myChart != null)
 	{
 		$("#myChart").remove();		
 	}
 	
-	var h = $(document).height() - 40;
+	var h = $(document).height() - 20;
 	var w = $("body").width();
-	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '"></canvas>');		
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '" style="margin-top: 10px"></canvas>');		
 	
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
-    	type: 'pie',
+    	type: 'bar',
     	data: {
 	        labels: model.labels,
 	        datasets: [{
-	            label: '# di prestazioni per branca',
+	            //label: '# di prestazioni per branca',
 	            data: model.data[0],	            
 	            backgroundColor: colors,
 	            /*
@@ -101,15 +102,27 @@ function printChart(model)
 	        }]
 	    },
 	    options: {
-	    	aspectRatio: 1,
-	    	responsive: true,
-	        
+	    	plugins: {
+	            colorschemes: {
+	                scheme: 'brewer.Paired12'
+	            }
+	        },
 	        legend: {
 	        	display: false,
 	        	label: 
 	        		{
 	        		
 	        		}
+	        },
+	    	aspectRatio: 4/3,
+	    	responsive: true,
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero: true,
+	                    autoSkip: false
+	                }
+	            }]
 	        },
 	        tooltips: {
 	            // Disable the on-canvas tooltip
@@ -162,8 +175,8 @@ function printChart(model)
 	                        var style = 'background:#DDD';// + colors.backgroundColor;
 	                        style += '; border-color:' + colors.borderColor;
 	                        style += '; border-width: 2px';
-	                        var span = '<span style="' + style + '"></span>';	        
-	                        var perc = (valuesHashMap[body[0]] / total * 100);
+	                        var span = '<span style="' + style + '"></span>';
+	                        var perc = (valuesHashMap[titleLines[0]] / total * 100);
 	                        innerHtml += '<tr><td>' + span + body + '</td></tr></tr><tr><td>' + perc.toFixed(2) + '%</td></tr><tr><td>Totale: ' + total + '</td>';
 	                    });
 	                    innerHtml += '</tbody>';
@@ -191,8 +204,7 @@ function printChart(model)
 	    }
 	});
 	
-	myChart.canvas.parentNode.style.height = '300px';
-	//myChart.canvas.parentNode.style.width = '128px';
+	hideLoader();	
 }
 
 function RGB2Color(r,g,b, a)
@@ -202,82 +214,53 @@ function RGB2Color(r,g,b, a)
 
 function refresh()
 {
-	var min = 5000, max = 0;
+	showLoader();
 	
-	var years = $(".year");
+	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
 	
-	for(var i = 0; i < years.length; i++)
-	{
-		var year = years[i];
-	
-		if(year.checked)
-		{
-			var v = parseInt(year.id);
-			if(v < min)
-				min = v;
-			
-			if(v > max)
-				max = v;			
-		}
-	}
-	
+	 var anni = parseInt($('#anni').find(":selected").attr("value"));
+     var annoPartenza = parseInt($('#annoPartenza').find(":selected").attr("value"));
+     
+     var annoFine = annoPartenza + anni;
+     
 	var comune = $('#comuni-auto').val();
 	if(comune == ""  || comune == undefined)
 		comune = $('#comuni').find(":selected").text();
 	
-	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
 	
-	if(min < 5000) // trovato almeno uno
-		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
-	
-	//if(branca != "Tutti")
-	//	url += "branca=" + branca + "&";
+	url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
 	
 	if(comune != "Tutti")
 		url += "comune=" + comune;
+	
+	var asl = $('#asl').find(":selected").text();
+	
+	if(asl != "Tutte")
+		url += "asl=" + asl;
 	
 	url += "&minValue=" + $('#minValue').val();
 	
 	$.ajax({
 	    type: "GET",
 		url: url,
-		async: false,
+		async: true,
 		error: function(e) {
-			error({'error': e});
+			hideLoader();
+			 alert("Impossibile comunicare con il servizio " + e);
 		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
 		},
-		success: function( response ) {		    		    
+		success: function( response ) {
+			hideLoader();
 		    printChart(response);
 		}
 	});
+	
 }
 
-/*
-var count = model.data.length;
-var backgroundColorArray = [];
 
-var frequency = .3;
-var amplitude = 127;
-var center = 128;
-var phase = 128;
-for(var i = 0; i < count; i++)
-{
-	red   = Math.sin(frequency*i+2+phase) * width + center;
-    green = Math.sin(frequency*i+0+phase) * width + center;
-    blue  = Math.sin(frequency*i+4+phase) * width + center;
 
-    
-	backgroundColorArray.push('rgba(' + 20 + ', ' + color + ', ' + color + ', 0.2)');
-	
-	   // Note that &#9608; is a unicode character that makes a solid block
-	   document.write( '<font style="color:' + RGB2Color(v,v,v) + '">&#9608;</font>');
-	}
-	
-	var color = 20 + i * 2;
-
-}
-*/
 </script>
+
 
 </body>
 </html>

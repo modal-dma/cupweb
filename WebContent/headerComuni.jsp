@@ -11,8 +11,8 @@
  <span style="background-color: white; text-align: right;">
  <span class="ui-widget">
     MinValue: <input id="minValue" value="0"  style="width:80px;">
-    <%@include file="widgetAnni.jsp" %>
- 	<%@include file="widgetComuni.jsp" %>
+    <%@include file="graphs/widgetAnni.jsp" %>
+ 	<%@include file="graphs/widgetComuni.jsp" %>
 
  <a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
  </span>

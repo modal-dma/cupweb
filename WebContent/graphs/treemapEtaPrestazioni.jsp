@@ -3,32 +3,33 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
 
 <!-- CSS Files -->
-<link type="text/css" href="css/base.css" rel="stylesheet" />
-<link type="text/css" href="css/Treemap.css" rel="stylesheet" />
+<link type="text/css" href="../css/base.css" rel="stylesheet" />
+<link type="text/css" href="../css/Treemap.css" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style.css">
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
-<script language="javascript" type="text/javascript" src="js/jit.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jit.js"></script>
 
 <!-- Example File -->
-<script language="javascript" type="text/javascript" src="js/branchePrestazioni.js"></script>
+<script language="javascript" type="text/javascript" src="../js/branchePrestazioni.js"></script>
 
   </head>
 
   <body>  
               
     <script>
-
+   
      function refresh()
      {
-   	  	$("#ajaxloader").show();
+   	  	showLoader();
    	  
      	var min = 5000, max = 0;
      	
@@ -53,7 +54,7 @@
      	
      	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
      			
-     	var url = serverUrl + "/modal/api/1.0.0/branchePrestazioni?"
+     	var url = serverUrl + "/modal/api/1.0.0/etaPrestazioni?"
 
      	if(min < 5000) // trovato almeno uno
      		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
@@ -66,18 +67,18 @@
    		async: true,
    		error: function(e) {
    			//error({'error': e});
-   			$("#ajaxloader").hide();
+   			hideLoader();
    		    alert("Impossibile comunicare con il servizio " + e);
    		},
    		success: function( model ) {
-   			$("#ajaxloader").hide();
+   			hideLoader();
    			
    			var json = {
    					"children": [],
    					"data": {"playcount": 100}, 
    				   	"id": "root", 
    				   	"level": 0,
-   				   	"name": "Prestazione in Branche"
+   				   	"name": "Prestazione per eta"
    			};
 				
    			var count = 1;
@@ -89,7 +90,7 @@
    				
    			    if (model.hasOwnProperty(key)) 
    			    {
-   			    	var color = getColor(count * 10);
+   			    	var color = getColor(count);
    			    	count++;
    			    	
    			    	var root = {
@@ -129,7 +130,6 @@
        					}
      					
      					var actualChildren = [];
-     					
      					for(var i = 0; i < root.children.length; i++)
          				{
      						var child = root.children[i];
@@ -138,11 +138,11 @@
      						if(child.data.playcount >= 1)
      							actualChildren.push(child);
          				}
-     						     		
+     						     						
      					root.children = actualChildren;
      					
      					root.data = {
-     						"$color": pSBC(-0.5, color),
+     						"$color": pSBC(-0.7, color),
      						"playcount": area,
 				      		"$area": "" + area,
 				      		"level": 1
@@ -170,16 +170,16 @@
      
      function getColor(i)
      {
-    	var frequency = .3;
+    	var frequency = 1;
     	var amplitude = 127;
     	var center = 128;
     	var phase = 128;
     		
-		var red   = Math.sin(frequency*i+2+phase) * amplitude + center;
-	    var green = Math.sin(frequency*i+0+phase) * amplitude + center;
-	    var blue  = Math.sin(frequency*i+4+phase) * amplitude + center;
+		var red   = Math.cos(frequency*i+1) * amplitude + center;
+	    var green = Math.cos(frequency*i+2) * amplitude + center;
+	    var blue  = Math.cos(frequency*i+3) * amplitude + center;
 		    
-		return 'rgba(' + red + ', ' + green+ ', ' + blue + ', 0.2)';
+		return 'rgba(' + red + ', ' + green+ ', ' + blue + ')';//, 0.2)';
    		
      }
       
@@ -216,15 +216,12 @@
 			</div>
 		</div>
 		
+		<script src="../js/widgetLoader.js"></script>
 		<script>
-		$('#infovis').css("height", ($(window).height() - $('#branche').height() - 20) + "px");
+		$(document).ready(function () {
+			refresh();
+		})
 		
-		$(document.body).append('<img id="ajaxloader" src="images/ajax-loader.gif" alt="Wait" style="vertical-align: middle; width: 90px; height:90px" />');
-		$("#ajaxloader").css({position: 'absolute', top: (($(window).height() / 2) - ($("#ajaxloader").width() / 2)) + "px", left: ($(window).width() - $("#ajaxloader").width()) / 2 + "px", zIndex: 1000});
-		$("#ajaxloader").hide();
-
-
-		refresh();
 		</script>
   </body>
 </html>

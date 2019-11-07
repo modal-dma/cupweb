@@ -4,31 +4,32 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
 
 <meta charset="ISO-8859-1">
 
 <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
   <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="../vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
  
- <link rel="stylesheet" href="css/style.css">
+ <link rel="stylesheet" href="../css/style.css">
 
-<script src="js/widgetLoader.js"></script>
+<script src="../js/widgetLoader.js"></script>
 
 <title>Bar Chart</title>
 </head>
 <body>
+<div class="menubar">
 <span class="ui-widget">
 <%@include file="widgetAnni.jsp" %>
 <a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
 
 </span>
-
+</div>
 <script>
 
 var urlParams = new URLSearchParams(location.search);
@@ -39,7 +40,7 @@ $(document).ready(function() {
 	
 	console.debug("start");
 	
-	$("#ajaxloader").show();
+	showLoader();
 
 	if(startdate && enddate)
 	{
@@ -48,12 +49,12 @@ $(document).ready(function() {
 				url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune?startdate="+startdate + "&enddate="+enddate,
 				async: true,
 				error: function(e) {
-					$("#ajaxloader").hide();
+					hideLoader();
 					alert("Impossibile comunicare con il servizio " + e.message);
 				},
 				success: function( response ) {
 					console.debug("hide");
-					$("#ajaxloader").hide();
+					hideLoader();
 				    printChart(response);
 				}
 			});
@@ -65,11 +66,12 @@ $(document).ready(function() {
 			url: serverUrl + "/modal/api/1.0.0/prestazioniPerBrancaPerComune",
 			async: true,
 			error: function(e) {
-				error({'error': e});
-			       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+				hideLoader();
+				alert("Impossibile comunicare con il servizio DSS " + e.message);
 			},
 			success: function( response ) {		    		    
 			    printChart(response);
+			    hideLoader();
 			}
 		});
 	

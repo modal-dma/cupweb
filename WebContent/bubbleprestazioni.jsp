@@ -42,7 +42,7 @@
           <li class="breadcrumb-item">
             <a href="#">Dashboard</a>
           </li>
-          <li class="breadcrumb-item active">Path prestazioni nel tempo</li>
+          <li class="breadcrumb-item active">Prestazioni-Comuni</li>
         </ol>          
 
 		<a name="distpresteta"/>
@@ -51,42 +51,9 @@
             <div class="card mb-3">
               <div class="card-header">
                 <i class="fas fa-chart-bar"></i>
-                Path prestazioni nel tempo</div>
+                Prestazioni-Comuni</div>
               <div class="card-body">
-              <%
-              String type = request.getParameter("type");
-		  
-		  	if(type.equals("rgraph"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/graphpathPrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("hypertree"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/hypertreePrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("icycle"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/pathPrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("spacetree"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/spacetreePrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("sunburst"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/sunburstPrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-              %>              	               
+              	<iframe width="100%" height="600" src="graphs/bubblePrestazioni.jsp" frameBorder="0" scrolling="yes"></iframe>                
               </div>
               <div class="card-footer small text-muted">Periodo 2014-2019</div>
             </div>

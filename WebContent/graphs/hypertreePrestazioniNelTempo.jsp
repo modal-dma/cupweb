@@ -5,56 +5,45 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
 
 <!-- CSS Files -->
-<link type="text/css" href="css/base.css" rel="stylesheet" />
-<link type="text/css" href="css/Icicle.css" rel="stylesheet" />
+<link type="text/css" href="../css/base.css" rel="stylesheet" />
+<link type="text/css" href="../css/Icicle.css" rel="stylesheet" />
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
-<script language="javascript" type="text/javascript" src="js/jit.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jit.js"></script>
 
 <!-- Example File -->
-<script language="javascript" type="text/javascript" src="js/rgraph.js"></script>
+<script language="javascript" type="text/javascript" src="../js/hypertree.js"></script>
 
   </head>
 
   <body>  
   <%@include file="headerPrestazioni.jsp" %>
-  
+   
     <script>
-           
-    $.ajax({
-        type: "GET",
-    	url: serverUrl + "/modal/api/1.0.0/prestazioni",
-    	async: false,
-    	error: function(e) {
-    		//error({'error': e});
-    	    alert("Impossibile comunicare con il servizio " + e);
-    	},
-    	success: function( response ) {		    		    
-    		addOptions("#prestazioni", response);    		
-    	}
-    });    
-      
+          
       function refresh()
       {
-    	  $("#ajaxloader").show();
-    	
-       	var prestazione = $('#prestazioni-auto').val();
-       	if(prestazione == ""  || prestazione == undefined)
-       		prestazione = $('#prestazioni').find(":selected").text();
+    	  showLoader();
+    	  
+      	
+      	var url = serverUrl + "/modal/api/1.0.0/pathPrestazioniNelTempo?"
 
+      	var prestazione = $('#prestazioni-auto').val();
+    	if(prestazione == ""  || prestazione == undefined)
+    		prestazione = $('#prestazioni').find(":selected").text();
+    	
       	var gender = $('#gender').find(":selected").attr("value");
       	var userLimit = $('#userLimit').val();
       	var anni = $('#anni').find(":selected").attr("value");
       	var annoPartenza = $('#annoPartenza').find(":selected").attr("value");
       	var eta = $('#eta').find(":selected").attr("value");
-      	//http://localhost:8090/modal/api/1.0.0/heatmapPrestazioni?prestazione=AMNIOCENTESI&limit=100
       			
       	var url = serverUrl + "/modal/api/1.0.0/pathPrestazioniNelTempo?"
 
@@ -66,18 +55,18 @@
       	url += "&anni=" + anni;
       	if(eta != "tutti")
       		url += "&eta=" + eta;
-      	
+
       	$.ajax({
     	    type: "GET",
     		url: url,
     		async: true,
     		error: function(e) {
     			//error({'error': e});
-    			$("#ajaxloader").hide();
+    			hideLoader();
     		    alert("Impossibile comunicare con il servizio " + e);
     		},
     		success: function( model ) {
-    			$("#ajaxloader").hide();
+    			hideLoader();
     			
     			var json = {
     					"id": 1, 
@@ -90,16 +79,17 @@
 					      "children": model.childrenCount,
 					      "percentage": 100
     				    }, 
-    				    "children": []
+    				    "children": [],
+    				    
     			};
     			
-    			populateJSON(model.count, json, model.children, 1);    			    			    	
+    			populateJSON(model.count, json, model.children, 1);  
     			
     			json.data.children = json.children.length;
     			
     			$('#infovis').css("height", $(window).height() + "px");
     			$('#infovis').html("");
-    			init_rgraph(json);    			    			
+    			init_hypertree(json);    			    			
     		}
     	});      	      	      				      
       }                 
@@ -128,14 +118,14 @@
 					      "children": child.childrenCount,
 					      "percentage": (100 * child.count / totalCount)
 					    }, 
-					    "children": []
+					    "children": []					    
 					};
 	    	  	  
 	    	  	  node.children.push(nodeChild);
 	    	  	  
 	    	  	  populateJSON(totalCount, nodeChild, child.children, level + 1);
 	    	  	  
-	    	  	nodeChild.data.children = nodeChild.children.length;
+	    	  	  nodeChild.data.children = nodeChild.children.length;
     		  }	
     	  }    	  	        	  
       }
@@ -156,7 +146,7 @@
       }
       
     </script>
-  	<div id="container">
+  	<div id="container" style="margin-top: 10px">
 			<div id="center-container">
     			<div id="infovis"></div>    
 			</div>
@@ -164,11 +154,6 @@
 		
 		<script>
 		$('#infovis').css("height", ($(window).height() - $('#branche').height() - 20) + "px");
-		
-		$(document.body).append('<img id="ajaxloader" src="images/ajax-loader.gif" alt="Wait" style="vertical-align: middle; width: 90px; height:90px" />');
-		$("#ajaxloader").css({position: 'absolute', top: (($(window).height() / 2) - ($("#ajaxloader").width() / 2)) + "px", left: ($(window).width() - $("#ajaxloader").width()) / 2 + "px", zIndex: 1000});
-		$("#ajaxloader").hide();
-
 		
 		</script>
   </body>

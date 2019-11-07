@@ -2,7 +2,7 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
 <meta charset="ISO-8859-1">
 <title>Bar Chart</title>
@@ -81,7 +81,7 @@ function printChart(model)
     	data: {
 	        labels: model.labels,
 	        datasets: [{
-	            label: '# di prestazioni per branca',
+	            label: '# di prestazioni',
 	            data: model.data[0],	            
 	            backgroundColor: backgroundColorArray,
 	            /*

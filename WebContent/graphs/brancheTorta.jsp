@@ -1,119 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="js/constants.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="../js/constants.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
-<script src="js/widgetLoader.js"></script>
-
 <meta charset="ISO-8859-1">
- <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-
-  <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
- 
- <link rel="stylesheet" href="css/style.css">
-
 <title>Bar Chart</title>
 </head>
 <body>
-<span class="ui-widget">
-<%@include file="widgetAnni.jsp" %>
-<a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
+<span class="ui-widget">MinValue: <input id="minValue" value="0"  style="width:80px;"></span>
+<%@include file="headerComuni.jsp" %>
 
-</span>
-<!-- 
-<div class="chart-container" style="position: relative; height:80vh; width:90vw">
- -->
-<!-- </div>  -->
 <script>
 
-var urlParams = new URLSearchParams(location.search);
-var type = urlParams.get('type');  
+$.ajax({
+    type: "GET",
+	url: serverUrl + "/modal/api/1.0.0/comuni",
+	async: false,
+	error: function(e) {
+		error({'error': e});
+	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+	},
+	success: function( response ) {		    		    
+		addOptions("#comuni", response);
+	}
+});
 
 var myChart = null;
 
-var method = type == "disp" ? "attesaDisponibilitaPerBranca" : "attesaPerBranca";
-
-$(document).ready(function () {
-	$("#ajaxloader").show();
-
-	$.ajax({
-		    type: "GET",
-			url: serverUrl + "/modal/api/1.0.0/" + method,
-			async: true,
-			error: function(e) {
-				$("#ajaxloader").hide();
-			    alert("Impossibile comunicare con il servizio " + e.message);
-			},
-			success: function( response ) {		    		  
-				$("#ajaxloader").hide();
-			    printChart(response);
-			}
-		});
+$.ajax({
+	    type: "GET",
+		url: serverUrl + "/modal/api/1.0.0/prestazioniPerBranca",
+		async: false,
+		error: function(e) {
+			error({'error': e});
+		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
+		},
+		success: function( response ) {		    		    
+		    printChart(response);
+		}
+	});
 	
-});	
 	
 function printChart(model)
 {
-	var color = Chart.helpers.color;
+	var count = model.data[0].length;
+	var backgroundColorArray = [];
+	var frequency = .2;
+	var amplitude = 127;
+	var center = 128;
+	var phase = 1;
 	
+	var total = 0;
+	var valuesHashMap = { };
+	
+	for(var i = 0; i < count; i++)
+	{
+		var red   = Math.sin(frequency*i+2+phase) * amplitude + center;
+	    var green = Math.sin(frequency*i+0+phase) * amplitude + center;
+	    var blue  = Math.sin(frequency*i+4+phase) * amplitude + center;
+	    
+		//var color = 20 + i * 2;
+		backgroundColorArray.push('rgba(' + red + ', ' + green+ ', ' + blue + ', 0.2)');
+		
+		total += model.data[0][i];
+		
+		valuesHashMap[model.labels[i] + ": " + model.data[0][i]] = model.data[0][i];
+	}
+
 	if(myChart != null)
 	{
 		$("#myChart").remove();		
 	}
 	
-	var total = 0;
-	
-	for(var i = 0; i < model.data[3].length; i++)
-	{
-		total += model.data[3][i];	
-	}
-	
 	var h = $(document).height() - 40;
 	var w = $("body").width();
-	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '"></canvas>');	
+	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '"></canvas>');		
 	
 	var ctx = document.getElementById('myChart').getContext('2d');
 	myChart = new Chart(ctx, {
-    	type: 'bar',
+    	type: 'pie',
     	data: {
 	        labels: model.labels,
 	        datasets: [{
-	            label: 'Min gg di attesa',
+	            label: '# di prestazioni per branca',
 	            data: model.data[0],	            
-	            backgroundColor: 'rgba(255, 99, 132, 1)',
-	            /*
-	            borderColor: [
-	                'rgba(255, 99, 132, 1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],*/
-	            borderWidth: 1
-	        }, 
-	        {
-	            label: 'Max gg di attesa',
-	            data: model.data[1],
-	            backgroundColor: 'rgba(54, 162, 235, 1)',	            
-	            /*
-	            borderColor: [
-	                'rgba(255, 99, 132, 1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],*/
-	            borderWidth: 1
-	        }, 
-	        {
-	            label: 'Media gg di attesa',
-	            data: model.data[2],	            
-	            backgroundColor: 'rgba(153, 102, 255, 1)',
+	            backgroundColor: colors,
 	            /*
 	            borderColor: [
 	                'rgba(255, 99, 132, 1)',
@@ -127,16 +101,16 @@ function printChart(model)
 	        }]
 	    },
 	    options: {
-	    	aspectRatio: 4/3,
+	    	aspectRatio: 1,
 	    	responsive: true,
-	        scales: {
-	            yAxes: [{
-	                ticks: {
-	                    beginAtZero: true
-	                }
-	            }]
-	        },
 	        
+	        legend: {
+	        	display: false,
+	        	label: 
+	        		{
+	        		
+	        		}
+	        },
 	        tooltips: {
 	            // Disable the on-canvas tooltip
 	            enabled: false,
@@ -188,9 +162,9 @@ function printChart(model)
 	                        var style = 'background:#DDD';// + colors.backgroundColor;
 	                        style += '; border-color:' + colors.borderColor;
 	                        style += '; border-width: 2px';
-	                        var span = '<span style="' + style + '"></span>';
-	                        
-	                        innerHtml += '<tr><td>' + span + body + '</td></tr></tr><tr><td>Totale: ' + total + '</td>';
+	                        var span = '<span style="' + style + '"></span>';	        
+	                        var perc = (valuesHashMap[body[0]] / total * 100);
+	                        innerHtml += '<tr><td>' + span + body + '</td></tr></tr><tr><td>' + perc.toFixed(2) + '%</td></tr><tr><td>Totale: ' + total + '</td>';
 	                    });
 	                    innerHtml += '</tbody>';
 
@@ -228,39 +202,54 @@ function RGB2Color(r,g,b, a)
 
 function refresh()
 {
-	$("#ajaxloader").show();
+	var min = 5000, max = 0;
 	
-	var anni = parseInt($('#anni').find(":selected").attr("value"));
-    var annoPartenza = parseInt($('#annoPartenza').find(":selected").attr("value"));
-    
-    var annoFine = annoPartenza + anni;
-    
-//	var comune = $('#comuni-auto').val();
-//	if(comune == ""  || comune == undefined)
-//		comune = $('#comuni').find(":selected").text();
+	var years = $(".year");
 	
-	var url = serverUrl + "/modal/api/1.0.0/" + method + "?";
+	for(var i = 0; i < years.length; i++)
+	{
+		var year = years[i];
 	
-	url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
+		if(year.checked)
+		{
+			var v = parseInt(year.id);
+			if(v < min)
+				min = v;
+			
+			if(v > max)
+				max = v;			
+		}
+	}
 	
-//	if(comune != "Tutti")
-//		url += "comune=" + comune;
-		
+	var comune = $('#comuni-auto').val();
+	if(comune == ""  || comune == undefined)
+		comune = $('#comuni').find(":selected").text();
+	
+	var url = serverUrl + "/modal/api/1.0.0/prestazioniPerBranca?";
+	
+	if(min < 5000) // trovato almeno uno
+		url += "startdate=01/01/" + min + "&enddate=31/12/" + max + "&";
+	
+	//if(branca != "Tutti")
+	//	url += "branca=" + branca + "&";
+	
+	if(comune != "Tutti")
+		url += "comune=" + comune;
+	
+	url += "&minValue=" + $('#minValue').val();
 	
 	$.ajax({
 	    type: "GET",
 		url: url,
-		async: true,
+		async: false,
 		error: function(e) {
-			$("#ajaxloader").hide();
-		    alert("Impossibile comunicare con il servizio " + e.message);
+			error({'error': e});
+		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
 		},
-		success: function( response ) {		    		  
-			$("#ajaxloader").hide();
+		success: function( response ) {		    		    
 		    printChart(response);
 		}
 	});
-	
 }
 
 /*

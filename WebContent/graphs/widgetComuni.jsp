@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="css/style.css">
 
  <label for="comuni-auto">Comuni: </label>
  <input id="comuni-auto" style="width:300px;">&nbsp;
@@ -14,18 +13,18 @@
      
 $(document).ready(function() {
 	
-	$("#ajaxloader").show();
+	showLoader();
 	
 	$.ajax({
 	    type: "GET",
 		url: serverUrl + "/modal/api/1.0.0/comuni",
 		async: true,
 		error: function(e) {
-			$("#ajaxloader").hide();
+			hideLoader();
 		    alert("Impossibile comunicare con il servizio" + e.message);
 		},
 		success: function( response ) {
-			$("#ajaxloader").hide();
+			hideLoader();
 			addComuni("#comuni", response);
 		}
 	});	
@@ -45,5 +44,11 @@ function addComuni(id, optionList)
 		select.append('<option value="' + option + '">' + option + '</option>');
 	}
 	
+	$( id + "-auto" ).on( "autocompleteselect", function( event, ui ) {
+		
+		$(id + " option:selected").prop("selected",false);
+		$(id + " option[value='" + ui.item.value + "']")
+		        .prop("selected",true);
+	});
 }
 </script>

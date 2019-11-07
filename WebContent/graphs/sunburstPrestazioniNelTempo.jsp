@@ -4,22 +4,22 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="js/constants.js"></script>
+<script src="../js/constants.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Prestazioni</title>
 
 <!-- CSS Files -->
-<link type="text/css" href="css/base.css" rel="stylesheet" />
-<link type="text/css" href="css/Icicle.css" rel="stylesheet" />
+<link type="text/css" href="../css/base.css" rel="stylesheet" />
+<link type="text/css" href="../css/Icicle.css" rel="stylesheet" />
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
-<script language="javascript" type="text/javascript" src="js/jit.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jit.js"></script>
 
 <!-- Example File -->
-<script language="javascript" type="text/javascript" src="js/sunburst.js"></script>
+<script language="javascript" type="text/javascript" src="../js/sunburst.js"></script>
 
   </head>
 
@@ -28,41 +28,10 @@
            
     <script>
    
-    $.ajax({
-        type: "GET",
-    	url: serverUrl + "/modal/api/1.0.0/prestazioni",
-    	async: false,
-    	error: function(e) {
-    		//error({'error': e});
-    	    alert("Impossibile comunicare con il servizio " + e);
-    	},
-    	success: function( response ) {		    		    
-    		addOptions("#prestazioni", response);    		
-    	}
-    });
-    
-    function addOptions(id, optionList)
-    {
-    	$( id).autocomplete({
-  	      source: optionList
-  	    });
-  	/*
-  	var select = $(id);    	
-  	for(var i = 0; i < optionList.length; i++)
-  	{
-  		var option = optionList[i];
-  		select.append('<option value="' + option + '">' + option + '</option>');
-  	}
-  	*/
-    }
-    
-    
-     
-    
       
       function refresh()
       {
-    	  $("#ajaxloader").show();
+    	  showLoader();
     	  
     	  var prestazione = $('#prestazioni').val();
   		  var gender = $('#gender').find(":selected").attr("value");
@@ -88,11 +57,11 @@
     		async: true,
     		error: function(e) {
     			//error({'error': e});
-    			$("#ajaxloader").hide();
+    			hideLoader();
     		    alert("Impossibile comunicare con il servizio " + e);
     		},
     		success: function( model ) {
-    			$("#ajaxloader").hide();
+    			hideLoader();
     			
     			var json = {
     					"id": 1, 
@@ -177,7 +146,7 @@
       }
       
     </script>
-  	<div id="container">
+  	<div id="container" style="margin-top: 10px">
 			<div id="center-container">
     			<div id="infovis"></div>    
 			</div>
@@ -185,12 +154,7 @@
 		
 		<script>
 		$('#infovis').css("height", ($(window).height() - $('#branche').height() - 20) + "px");
-		
-		$(document.body).append('<img id="ajaxloader" src="images/ajax-loader.gif" alt="Wait" style="vertical-align: middle; width: 90px; height:90px" />');
-		$("#ajaxloader").css({position: 'absolute', top: (($(window).height() / 2) - ($("#ajaxloader").width() / 2)) + "px", left: ($(window).width() - $("#ajaxloader").width()) / 2 + "px", zIndex: 1000});
-		$("#ajaxloader").hide();
-
-		
+				
 		</script>
   </body>
 </html>

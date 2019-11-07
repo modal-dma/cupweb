@@ -55,12 +55,14 @@
                 </div>
                 <div class="mr-5">20.264.779 Record</div>
               </div>
+              <!-- 
               <a class="card-footer text-white clearfix small z-1" href="#">
                 <span class="float-left">Dettagli</span>
                 <span class="float-right">
                   <i class="fas fa-angle-right"></i>
                 </span>
               </a>
+               -->
             </div>
           </div>
           <div class="col-xl-3 col-sm-6 mb-3">
@@ -71,12 +73,14 @@
                 </div>
                 <div class="mr-5">Periodo analisi: 2014-2019</div>
               </div>
+              <!-- 
               <a class="card-footer text-white clearfix small z-1" href="#">
                 <span class="float-left">Dettagli</span>
                 <span class="float-right">
                   <i class="fas fa-angle-right"></i>
                 </span>
               </a>
+               -->
             </div>
           </div>
           <div class="col-xl-3 col-sm-6 mb-3">
@@ -87,12 +91,14 @@
                 </div>
                 <div class="mr-5">17.359.289 Prenotazioni</div>
               </div>
+              <!-- 
               <a class="card-footer text-white clearfix small z-1" href="#">
                 <span class="float-left">Dettagli</span>
                 <span class="float-right">
                   <i class="fas fa-angle-right"></i>
                 </span>
               </a>
+               -->
             </div>
           </div>
           <div class="col-xl-3 col-sm-6 mb-3">
@@ -103,12 +109,14 @@
                 </div>
                 <div class="mr-5">7.594.739 Utenti</div>
               </div>
+              <!-- 
               <a class="card-footer text-white clearfix small z-1" href="#">
                 <span class="float-left">Dettagli</span>
                 <span class="float-right">
                   <i class="fas fa-angle-right"></i>
                 </span>
               </a>
+               -->
             </div>
           </div>
         </div>

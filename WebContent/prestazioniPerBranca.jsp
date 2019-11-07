@@ -42,57 +42,22 @@
           <li class="breadcrumb-item">
             <a href="#">Dashboard</a>
           </li>
-          <li class="breadcrumb-item active">Path prestazioni nel tempo</li>
-        </ol>          
-
-		<a name="distpresteta"/>
+          <li class="breadcrumb-item active">Prestazioni</li>
+        </ol>
+      
         <div class="row">
           <div class="col-lg-12">
             <div class="card mb-3">
               <div class="card-header">
                 <i class="fas fa-chart-bar"></i>
-                Path prestazioni nel tempo</div>
+                Numero di Prestazioni per Branca</div>
               <div class="card-body">
-              <%
-              String type = request.getParameter("type");
-		  
-		  	if(type.equals("rgraph"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/graphpathPrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("hypertree"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/hypertreePrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("icycle"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/pathPrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("spacetree"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/spacetreePrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-		  	else if(type.equals("sunburst"))
-		  	{
-		  		%>
-		  		<iframe width="100%" height="700" src="graphs/sunburstPrestazioniNelTempo.jsp" frameBorder="0" scrolling="no"></iframe>
-		  		<%
-		  	}
-              %>              	               
+              	<iframe width="100%" height="600" src="graphs/branche.jsp" frameBorder="0" scrolling="no"></iframe>                
               </div>
               <div class="card-footer small text-muted">Periodo 2014-2019</div>
             </div>
           </div>          
-        </div>
-      </div>
+        </div>		
       </div>
       <!-- /.container-fluid -->
 

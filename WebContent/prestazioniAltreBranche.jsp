@@ -1,171 +1,117 @@
-<!DOCTYPE html>
-<html>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+
 <head>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="js/constants.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>	
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
-<script src="js/widgetLoader.js"></script>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-<!-- Custom fonts for this template-->
+  <title>CUP-iONE - BI Dashboard</title>
+
+  <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
   <!-- Page level plugin CSS-->
   <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
- 
- <link rel="stylesheet" href="css/style.css">
 
-<meta charset="ISO-8859-1">
-<title>Bar Chart</title>
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin.css" rel="stylesheet">
+
 </head>
-<body>
-<span class="ui-widget">
-<%@include file="widgetAnni.jsp" %>
- <a href="#" onclick="refresh();"><i class="fas fa-sync-alt"></i></a>
- </span>
-<!-- 
-<div class="chart-container" style="position: relative; height:80vh; width:90vw">
- -->
+
+<body id="page-top">
+
+<%@include file="navbar.jsp" %>
 
 
-<!-- </div>  -->
-<script>
+  <div id="wrapper">
 
+    <!-- Sidebar -->
+    <%@include file="sidebar.jsp" %>
+    <div id="content-wrapper">
 
-var myChart = null;
-/*
-$.ajax({
-    type: "GET",
-	url: "http://localhost:8090/modal/api/1.0.0/branche",
-	async: false,
-	error: function(e) {
-		error({'error': e});
-	       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-	},
-	success: function( response ) {		    		    
-	    addOptions("#branche", response);
-	}
-});
-*/
+      <div class="container-fluid">
 
-$.ajax({
-	    type: "GET",
-		url: serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche",
-		async: false,
-		error: function(e) {
-			alert("Impossibile comunicare con il servizio: " + e.message);
-		},
-		success: function( response ) {		    		    
-		    printChart(response);
-		}
-	});
-	
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Prestazioni Altre Branche</li>
+        </ol>          
 
-function printChart(model)
-{
-	var count = model.data[0].length;
-	var backgroundColorArray = [];
-	var frequency = .3;
-	var amplitude = 127;
-	var center = 128;
-	var phase = 128;
-	
-	for(var i = 0; i < count; i++)
-	{
-		var red   = Math.sin(frequency*i+2+phase) * amplitude + center;
-	    var green = Math.sin(frequency*i+0+phase) * amplitude + center;
-	    var blue  = Math.sin(frequency*i+4+phase) * amplitude + center;
-	    
-		//var color = 20 + i * 2;
-		backgroundColorArray.push('rgba(' + red + ', ' + green+ ', ' + blue + ', 0.2)');
-	}
-	
-	if(myChart != null)
-	{
-		$("#myChart").remove();		
-	}
-	
-	var h = $(document).height() - 20;
-	var w = $("body").width();
-	$("body").append('<canvas id="myChart" width="' + w + '" height="' + h + '" style="margin-top: 10px"></canvas>');		
+		<a name="distpresteta"/>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-bar"></i>
+                Mappa Prestazioni-Branche</div>
+              <div class="card-body">
+              	<iframe width="100%" height="600" src="graphs/prestazioniAltreBranche.jsp" frameBorder="0" scrolling="yes"></iframe>                
+              </div>
+              <div class="card-footer small text-muted">Periodo 	2014-2019</div>
+            </div>
+          </div>          
+        </div>
+      </div>
+      </div>
+      <!-- /.container-fluid -->
 
-		
-	var ctx = document.getElementById('myChart').getContext('2d');
-	myChart = new Chart(ctx, {
-    	type: 'bar',
-    	data: {
-	        labels: model.labels,
-	        datasets: [{
-	            label: '# di prestazioni per branca',
-	            data: model.data[0],	            
-	            backgroundColor: backgroundColorArray,
-	            /*
-	            borderColor: [
-	                'rgba(255, 99, 132, 1)',
-	                'rgba(54, 162, 235, 1)',
-	                'rgba(255, 206, 86, 1)',
-	                'rgba(75, 192, 192, 1)',
-	                'rgba(153, 102, 255, 1)',
-	                'rgba(255, 159, 64, 1)'
-	            ],*/
-	            borderWidth: 1
-	        }]
-	    },
-	    options: {
-	    	plugins: {
-	            colorschemes: {
-	                scheme: 'brewer.Paired12'
-	            }
-	        },
-	    	aspectRatio: 4/3,
-	    	responsive: true,
-	        scales: {
-	            yAxes: [{
-	                ticks: {
-	                    beginAtZero: true,
-	                    autoSkip: false
-	                }
-	            }]
-	        }	        
-	    }
-	});
-	
-}
+      <!-- Sticky Footer -->
+      <%@include file="footer.jsp" %>
 
-function RGB2Color(r,g,b, a)
-{
-  return 'rgba(' + 20 + ', ' + color + ', ' + color + ', 0.2)';
-}
+    </div>
+    <!-- /.content-wrapper -->
 
-function refresh()
-{
-	
-	 var anni = parseInt($('#anni').find(":selected").attr("value"));
-     var annoPartenza = parseInt($('#annoPartenza').find(":selected").attr("value"));
-     
-     var annoFine = annoPartenza + anni;
-     
-	 var url = serverUrl + "/modal/api/1.0.0/prestazioniAltreBranche?";
-	
-	 url += "startdate=01/01/" + annoPartenza + "&enddate=31/12/" + annoFine + "&";
-	
-	$.ajax({
-	    type: "GET",
-		url: url,
-		async: false,
-		error: function(e) {
-			error({'error': e});
-		       //alert("Impossibile comunicare con il servizio DSS " + e.message);
-		},
-		success: function( response ) {		    		    
-		    printChart(response);
-		}
-	});
-	
-}
-</script>
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="js/constants.js"></script>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Page level plugin JavaScript-->
+  <script src="vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin.min.js"></script>
+
 
 </body>
+
 </html>

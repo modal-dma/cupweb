@@ -1,16 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
   
   <!-- Custom fonts for this template-->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
   <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <link href="../vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="../css/style.css">
 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<div style="background-color: white; text-align: center;">
+<script src="../js/widgetLoader.js"></script>
+
+<div class="menubar">
   <span class="ui-widget" >
   <label for="prestazioni-auto">Prestazioni: </label>
   <input id="prestazioni-auto" style="width:200px;">
@@ -53,34 +55,42 @@
      </span>
      </div>   
      
-     <script>
+<script>
      
-     $.ajax({
-    	    type: "GET",
-    		url: serverUrl + "/modal/api/1.0.0/prestazioni",
-    		async: false,
-    		error: function(e) {
-    			//error({'error': e});
-    		    alert("Impossibile comunicare con il servizio " + e);
-    		},
-    		success: function( response ) {		    		    
-    			addOptions("#prestazioni", response);    		
-    		}
-    	});
+$(document).ready(function() {
+	
+	showLoader();
+	
+	$.ajax({
+	    type: "GET",
+		url: serverUrl + "/modal/api/1.0.0/prestazioni",
+		async: true,
+		error: function(e) {
+			hideLoader();
+			//error({'error': e});
+		    alert("Impossibile comunicare con il servizio " + e);
+		},
+		success: function( response ) {
+			hideLoader();
+			addOptions("#prestazioni", response);
+			refresh();
+		}
+	});
+});
      
-     function addOptions(id, optionList)
-     {
-     	$(id + "-auto").autocomplete({
-   	      source: optionList
-   	    });
-     	
-     	var select = $(id);    	
-     	select.append('<option value="none"> &nbsp; </option>');
-     	for(var i = 0; i < optionList.length; i++)
-     	{
-     		var option = optionList[i];
-     		select.append('<option value="' + option + '">' + option + '</option>');
-     	}
-     	
-     }
-     </script>
+     
+function addOptions(id, optionList)
+{
+	$(id + "-auto").autocomplete({
+     source: optionList
+   });
+	
+	var select = $(id);    	
+	//select.append('<option value="none"> &nbsp; </option>');
+	for(var i = 0; i < optionList.length; i++)
+	{
+		var option = optionList[i];
+		select.append('<option value="' + option + '">' + option + '</option>');
+	}     	
+}
+</script>

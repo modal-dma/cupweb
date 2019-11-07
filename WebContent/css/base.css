@@ -4,7 +4,7 @@ html, body {
     font-family: "Lucida Grande", Verdana;
     font-size: 0.9em;
     /*text-align: center;*/
-    background-color:#000;
+    /*background-color:#000;*/
 }
 
 input, select {
@@ -74,7 +74,7 @@ a {
 #center-container {
     width:100%;
     left:0;
-    background-color:#000;
+    background-color:#212529;
     color:#ccc;
 }
 
@@ -122,7 +122,3 @@ a {
     padding:7px;
 }
 
-.ui-widget
-{
-	background-color: white;
-}

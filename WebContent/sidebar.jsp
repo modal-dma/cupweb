@@ -28,36 +28,63 @@
       </li>
        -->
        
-      <li class="nav-item active">
-        <a class="nav-link" href="eta.jsp#disteta">
-          <i class="fas fa-fw fa-chart-bar"></i>
-          <span>Distribuzione eta</span></a>
+       <li class="nav-item active dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-chart-bar"></i>          
+          <span>Analisi età</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+          <a class="dropdown-item" href="eta.jsp">Distribuzione</a>
+          <a class="dropdown-item" href="etaprest.jsp">Prestazioni per età</a>
+          <a class="dropdown-item" href="prestazionieta.jsp">Età per prestazione</a>     
+          <a class="dropdown-item" href="tmEtaPrestazioni.jsp">Treemap</a>     
+        </div>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="eta.jsp#distetaprest">
-          <i class="fas fa-fw fa-chart-bar"></i>
-          <span>Prestazioni per eta</span></a>
+      <li class="nav-item active dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-chart-bar"></i>          
+          <span>Analisi prestazioni</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+          <a class="dropdown-item" href="prestazioni.jsp">Distribuzione</a>
+          <a class="dropdown-item" href="prestazioniPerBranca.jsp">Prestazioni per branca</a>
+          <a class="dropdown-item" href="prestazionibranche.jsp">Prestazioni-Branche</a>       
+          <a class="dropdown-item" href="bubbleprestazioni.jsp">Prestazioni-Comuni</a>          
+          <a class="dropdown-item" href="etaprest.jsp">Prestazioni per età</a>
+          <a class="dropdown-item" href="prestazionieta.jsp">Età per prestazione</a>    
+          <a class="dropdown-item" href="hmPrestazioni.jsp">Heatmap</a>  
+              
+        </div>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="prestazioni.jsp">
-          <i class="fas fa-fw fa-chart-bar"></i>
-          <span>Prestazioni per branca</span></a>
+      
+      <li class="nav-item active dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-chart-bar"></i>          
+          <span>Analisi branche</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <a class="dropdown-item" href="branche.jsp">Distrubuzione</a>
+          <a class="dropdown-item" href="attesa.jsp">Attesa per branca</a>
+          <a class="dropdown-item" href="hmBranche.jsp">Heatmap branche</a>
+          <a class="dropdown-item" href="tmBranchePrestazioni.jsp">Treemap</a>
+          <a class="dropdown-item" href="prestazioniAltreBranche.jsp">Altre branche</a>          
+        </div>
+      </li>                 
+      
+      <li class="nav-item active dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-fw fa-chart-line"></i>          
+          <span>Path nel tempo</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+          <a class="dropdown-item" href="paths.jsp?type=rgraph">r-graph</a>
+          <a class="dropdown-item" href="paths.jsp?type=hypertree">hypertree</a>
+          <a class="dropdown-item" href="paths.jsp?type=icycle">iCycle</a>
+          <a class="dropdown-item" href="paths.jsp?type=sunburst">sunburst</a>
+          <a class="dropdown-item" href="paths.jsp?type=hypertree">spacetree</a>
+        </div>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="prestazionibranche.jsp">
-          <i class="fas fa-fw fa-braille"></i>
-          <span>Bubble Prestazioni-branche</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="prestazioni.jsp#presteta">
-          <i class="fas fa-fw fa-chart-bar"></i>
-          <span>Età per prestazioni</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="attesa.jsp">
-          <i class="fas fa-fw fa-chart-bar"></i>
-          <span>Attesa per branca</span></a>
-      </li>
+      
       <li class="nav-item active dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-fire"></i>          
@@ -78,19 +105,6 @@
           <a class="dropdown-item" href="tmEtaPrestazioni.jsp">Eta/Prestazioni</a>
         </div>
       </li>
-      <li class="nav-item active dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-fw fa-chart-line"></i>          
-          <span>Path nel tempo</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-          <a class="dropdown-item" href="paths.jsp?type=rgraph">r-graph</a>
-          <a class="dropdown-item" href="paths.jsp?type=hypertree">hypertree</a>
-          <a class="dropdown-item" href="paths.jsp?type=icycle">iCycle</a>
-          <a class="dropdown-item" href="paths.jsp?type=sunburst">sunburst</a>
-          <a class="dropdown-item" href="paths.jsp?type=hypertree">spacetree</a>
-        </div>
-      </li>
       <!-- 
       <li class="nav-item">
         <a class="nav-link" href="tables.html">
@@ -99,3 +113,4 @@
       </li>
       -->
     </ul>
+    

@@ -13,7 +13,7 @@
 <title>CUP WEB</title>
 </head>
 <body class="drawer drawer--left">
-<%@include file="header.jsp" %>
+
 <main role="main" style="margin: 100px;">
 <h1>MODAL@DMA</h1>
 <h2>CUP BI</h2>

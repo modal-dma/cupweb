@@ -22,6 +22,9 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
 
+<!-- Custom styles for this template-->
+  <link href="css/style.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -45,7 +48,6 @@
           <li class="breadcrumb-item active">Distribuzione eta</li>
         </ol>
       
-      <a name="disteta"/>
         <div class="row">
           <div class="col-lg-8">
             <div class="card mb-3">
@@ -70,22 +72,6 @@
             </div>
           </div>
         </div>
-
-		<a name="distpresteta"/>
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="card mb-3">
-              <div class="card-header">
-                <i class="fas fa-chart-bar"></i>
-                Distribuzione Prestazioni per Eta</div>
-              <div class="card-body">
-              	<iframe width="100%" height="600" src="etaPrestazioni.jsp" frameBorder="0" scrolling="no"></iframe>                
-              </div>
-              <div class="card-footer small text-muted">Periodo 2014-2019</div>
-            </div>
-          </div>          
-        </div>
-      </div>
       </div>
       <!-- /.container-fluid -->
 
@@ -137,7 +123,7 @@
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin.min.js"></script>
 
-<script src="js/widgetLoader.js"></script>
+<script src="js/widgetLoaderMain.js"></script>
 
   <!-- Demo scripts for this page-->  
   <script>
@@ -147,7 +133,7 @@
   var url = serverUrl + "/modal/api/1.0.0/etaEx"
 $(document).ready(function() {
 	
-	$("#ajaxloader").show();
+	showLoader();
 	
 	$.ajax({
 	    type: "GET",
@@ -155,13 +141,13 @@ $(document).ready(function() {
 		async: true,
 		error: function(e) {
 	
-			$("#ajaxloader").hide();
+			hideLoader();
 		    alert("Impossibile comunicare con il servizio" + e.message);
 		},
-		success: function( response ) {
-			$("#ajaxloader").hide();
+		success: function( response ) {			
 		    printChart(response);
 		    printPieChart(response);
+		    hideLoader();
 		}
 	});
 });
