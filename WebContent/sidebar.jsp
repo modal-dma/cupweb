@@ -81,10 +81,10 @@
           <a class="dropdown-item" href="paths.jsp?type=hypertree">hypertree</a>
           <a class="dropdown-item" href="paths.jsp?type=icycle">iCycle</a>
           <a class="dropdown-item" href="paths.jsp?type=sunburst">sunburst</a>
-          <a class="dropdown-item" href="paths.jsp?type=hypertree">spacetree</a>
+          <a class="dropdown-item" href="paths.jsp?type=spacetree">spacetree</a>
         </div>
       </li>
-      
+      <!-- 
       <li class="nav-item active dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-fw fa-fire"></i>          
@@ -105,6 +105,7 @@
           <a class="dropdown-item" href="tmEtaPrestazioni.jsp">Eta/Prestazioni</a>
         </div>
       </li>
+       -->
       <!-- 
       <li class="nav-item">
         <a class="nav-link" href="tables.html">

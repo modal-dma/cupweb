@@ -89,7 +89,7 @@
                 <div class="card-body-icon">
                   <i class="fas fa-fw fa-notes-medical"></i>
                 </div>
-                <div class="mr-5">17.359.289 Prenotazioni</div>
+                <div class="mr-5">13.056.042 Prenotazioni</div>
               </div>
               <!-- 
               <a class="card-footer text-white clearfix small z-1" href="#">
@@ -107,7 +107,7 @@
                 <div class="card-body-icon">
                   <i class="fas fa-fw fa-user"></i>
                 </div>
-                <div class="mr-5">7.594.739 Utenti</div>
+                <div class="mr-5">1.666.721 Utenti</div>
               </div>
               <!-- 
               <a class="card-footer text-white clearfix small z-1" href="#">

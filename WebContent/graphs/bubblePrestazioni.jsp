@@ -197,7 +197,7 @@ var svg = null;
 var myChart = null;
 var popup;
 var mapWeight = {};
-
+var mapCount = {};
 function printChart(model)
 {
 	// Draw areas for day stacked by brand
@@ -221,10 +221,12 @@ function printChart(model)
 			
 			totale += value.data;
 			
-			var point = {"UOP" : value.x, "Residenza": value.y, "Prestazioni": value.data};
+			var point = {"UOP" : value.x, "Residenza": value.y, "Ampiezza": value.data, "Distanza": value.weight, "Prestazioni": value.weight2};
 			data.push(point);
 			
 			mapWeight[value.x + value.y] = value.weight;
+			
+			mapCount[value.x + value.y] = value.weight2;
 		}
 			
 		var h = $(document).height() - 300;
@@ -235,15 +237,15 @@ function printChart(model)
 		myChart.setBounds(200, 30, w, h)
 	    var x = myChart.addCategoryAxis("y", "Residenza");    
 	    myChart.addCategoryAxis("x", "UOP");
-	    myChart.addMeasureAxis("z", "Prestazioni");
-	    var s = myChart.addSeries("Prestazioni", dimple.plot.bubble);
+	    myChart.addMeasureAxis("z", "Ampiezza");
+	    var s = myChart.addSeries(["Ampiezza", "Distanza", "Prestazioni"], dimple.plot.bubble);
 	    //myChart.addLegend(140, 10, 360, 20, "right");
 	    
 	    
 	    // Handle the hover event - overriding the default behaviour
-      	s.addEventHandler("mouseover", onHover);
+      	//s.addEventHandler("mouseover", onHover);
       	// Handle the leave event - overriding the default behaviour
-      	s.addEventHandler("mouseleave", onLeave);
+      	//s.addEventHandler("mouseleave", onLeave);
       
 	    myChart.draw();
 	}
@@ -260,7 +262,7 @@ function onHover(e) {
       stroke = e.selectedShape.attr("stroke");
       
   // Set the size and position of the popup
-  var width = 150,
+  var width = 250,
       height = 100,
       x = (cx + r + width + 10 < svg.attr("width") ?
             cx + r + 10 :
@@ -312,16 +314,17 @@ function onHover(e) {
   .style("font-size", 10)
   .style("fill", stroke);
   
+  var count = mapCount[e.xValue + e.yValue];
   popup
   .append("text")
   .attr("x", x + 10)
   .attr("y", y + 10)
-  .text("Prestazioni: " + e.seriesValue[0])
+  .text("Prestazioni: " + count.toFixed(0))//e.seriesValue[0])
   .style("font-family", "sans-serif")
   .style("font-size", 10)
   .style("fill", stroke);
   
-  var weight = mapWeight[e.yValue + e.xValue];
+  var weight = mapWeight[e.xValue + e.yValue];
   
   popup
   .append("text")

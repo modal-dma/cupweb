@@ -52,7 +52,7 @@
                 <i class="fas fa-chart-bar"></i>
                 Heatmap Branche</div>
               <div class="card-body">
-              	<iframe width="100%" height="600" src="graphs/heatmapBranche.jsp" frameBorder="0" scrolling="no"></iframe>                
+              	<iframe width="100%" height="700" src="graphs/heatmapBranche.jsp" frameBorder="0" scrolling="no"></iframe>                
               </div>
               <div class="card-footer small text-muted">Periodo 2014-2019</div>
             </div>
